@@ -11,15 +11,19 @@ website: https://github.com/IanVzs/Halahayawa
 Last edited: 22 2 2021
 """
 import sys
-from PyQt5.QtWidgets import QApplication, QWidget, QDesktopWidget
-from PyQt5.QtGui import QIcon, QFont
+# from PyQt5.QtWidgets import QApplication, QWidget, QDesktopWidget
+# from PyQt5.QtGui import QIcon, QFont
+from PySide2 import QtCore
+from PySide2.QtWidgets import QApplication, QWidget
+from PySide2.QtGui import QIcon, QFont, QGuiApplication
 
 
 class Main(QWidget):
 
-    def __init__(self):
+    def __init__(self, screen=False):
         super().__init__()
 
+        self.screen = screen
         self.initUI()
 
 
@@ -60,15 +64,28 @@ class Main(QWidget):
             event.ignore()
 
     def center(self):
-        """居中"""
-        qr = self.frameGeometry()
-        cp = QDesktopWidget().availableGeometry().center()
-        qr.moveCenter(cp)
-        self.move(qr.topLeft())
+        """
+            居中
+            PyQt5 没消息
+            PySide2 提示DeprecationWarning: QDesktopWidget.availableGeometry(int screen) const is deprecated
+        """
+        # region Qt5
+        from PySide2.QtWidgets import QDesktopWidget
+        # qr = self.frameGeometry()
+        # cp = QDesktopWidget().availableGeometry().center()
+        # qr.moveCenter(cp)
+        # self.move(qr.topLeft())
+        #endregion
+        size = self.geometry()
+        screen = self.screen
+        self.move((screen.width() - size.width()) / 2,
+            (screen.height() - size.height()) / 2)
+        # 此方法不警告了,不过多屏居中会..居中在所有屏幕总和的中间
 
 
 if __name__ == '__main__':
 
     app = QApplication(sys.argv)
-    ex = Main()
+    screen = app.primaryScreen().geometry()
+    ex = Main(screen)
     sys.exit(app.exec_())
