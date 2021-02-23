@@ -4,6 +4,8 @@ How long have you worked.
 ## 使用
 ### 源码
 ```bash
+git clone git@github.com:IanVzs/Halahayawa.git
+cd Halahayawa/
 mkdir env
 python3 -m venv ./env
 source ~/env/bin/activate
