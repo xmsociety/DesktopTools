@@ -70,12 +70,13 @@ class Main(QWidget):
             PySide2 提示DeprecationWarning: QDesktopWidget.availableGeometry(int screen) const is deprecated
         """
         # region Qt5
-        from PySide2.QtWidgets import QDesktopWidget
+        # from PySide2.QtWidgets import QDesktopWidget
         # qr = self.frameGeometry()
         # cp = QDesktopWidget().availableGeometry().center()
         # qr.moveCenter(cp)
         # self.move(qr.topLeft())
         #endregion
+
         size = self.geometry()
         screen = self.screen
         self.move((screen.width() - size.width()) / 2,
