@@ -1,6 +1,18 @@
 # Halahayawa
 How long have you worked.
 
+## 使用
+### 源码
+```bash
+mkdir env
+python3 -m venv ./env
+source ~/env/bin/activate
+pip install -r requirements.txt -i https://pypi.tuna.tsinghua.edu.cn/simple
+python main.py
+```
+可根据实际情况进行适当调整
+
+### 可执行程序
 ## 原理
 检测鼠标以及键盘移动/输入,判断正在工作中.
 
