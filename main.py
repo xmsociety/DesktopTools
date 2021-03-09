@@ -14,7 +14,7 @@ import sys
 # from PyQt5.QtWidgets import QApplication, QWidget, QDesktopWidget
 # from PyQt5.QtGui import QIcon, QFont
 from PySide2 import QtCore
-from PySide2.QtWidgets import QApplication, QWidget
+from PySide2.QtWidgets import QApplication, QWidget, QVBoxLayout, QHBoxLayout, QLabel, QMessageBox
 from PySide2.QtGui import QIcon, QFont, QGuiApplication
 
 
@@ -35,7 +35,24 @@ class Main(QWidget):
         self.setWindowTitle('Pendulum')
         self.setWindowIcon(QIcon('harry_potter.png'))
 
+        self.vbox, self.hbox = self.initBoxLayout()
+        self.initMainWidgets()
+        self.hbox.addWidget(self.dictLabels["timeCounter"])
+        self.hbox.addWidget(self.dictLabels["vtimeCounter"])
+        self.vbox.addLayout(self.hbox)
+        self.setLayout(self.vbox)
         self.show()
+
+    def initBoxLayout(self):
+        vbox = QVBoxLayout()
+        hbox = QHBoxLayout()
+        return vbox, hbox
+
+    def initMainWidgets(self):
+        self.dictLabels = {
+            "timeCounter": QLabel("工作时长"),
+            "vtimeCounter": QLabel("996h"),
+        }
 
     def tooltip(self):
         """提示框  不过不好使唤"""
@@ -53,10 +70,9 @@ class Main(QWidget):
         """退出确认"""
         # TODO 测试期嫌累
         return 
-        from PyQt5.QtWidgets import QMessageBox
         reply = QMessageBox.question(self, 'Message',
             "Are you sure to quit?", QMessageBox.Yes | 
-            QMessageBox.No, QMessageBox.No)
+            QMessageBox.No, QMessageBox.Yes)
 
         if reply == QMessageBox.Yes:
             event.accept()
