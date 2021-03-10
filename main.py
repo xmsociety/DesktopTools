@@ -2,9 +2,9 @@
 # -*- coding: utf-8 -*-
 
 """
-Pendulum PyQt5 Main
+Pendulum PySide2 Main
 
-Create a simple window in PyQt5.
+Create a simple window in PySide2.
 
 author: Ian Vzs
 website: https://github.com/IanVzs/Halahayawa
