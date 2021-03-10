@@ -13,11 +13,12 @@ Last edited: 22 2 2021
 import sys
 # from PyQt5.QtWidgets import QApplication, QWidget, QDesktopWidget
 # from PyQt5.QtGui import QIcon, QFont
-from PySide2.QtCore import QTimer
-from PySide2.QtWidgets import QApplication, QWidget, QVBoxLayout, QHBoxLayout, QLabel, QMessageBox
+from PySide2.QtCore import QTimer, QThread
+from PySide2.QtWidgets import QApplication, QWidget, QVBoxLayout, QHBoxLayout, QLabel, QMessageBox, QPushButton
 from PySide2.QtGui import QIcon, QFont, QGuiApplication
 
 from tools import time_now, datetime2str
+from monitor import Thread_1, ThreadSignal
 
 
 class Main(QWidget):
@@ -47,11 +48,16 @@ class Main(QWidget):
         self.setWindowTitle('Pendulum')
         self.setWindowIcon(QIcon('harry_potter.png'))
 
-        self.vbox, self.hbox = self.initBoxLayout()
+        self.vbox, self.hbox, self.hbox2 = self.initBoxLayout()
         self.initMainWidgets()
+
         self.hbox.addWidget(self.dictLabels["timeCounter"])
         self.hbox.addWidget(self.dictLabels["vtimeCounter"])
+        self.hbox2.addWidget(self.dictButtons["123"])
+        self.hbox2.addWidget(self.dictButtons["abc"])
+
         self.vbox.addLayout(self.hbox)
+        self.vbox.addLayout(self.hbox2)
         self.setLayout(self.vbox)
 
         self.show()
@@ -59,13 +65,37 @@ class Main(QWidget):
     def initBoxLayout(self):
         vbox = QVBoxLayout()
         hbox = QHBoxLayout()
-        return vbox, hbox
+        hbox2 = QHBoxLayout()
+        return vbox, hbox, hbox2
 
     def initMainWidgets(self):
         self.dictLabels = {
             "timeCounter": QLabel("现在时间: "),
-            "vtimeCounter": QLabel("xxxx-xx-xx xx:xx:xx"),
+            "vtimeCounter": QLabel(""),
         }
+        a1 = QPushButton(">123", self)
+        a2 = QPushButton(">abc", self)
+        a1.clicked.connect(lambda: self.click_1(a1))
+        a2.clicked.connect(lambda: self.click_2(a2))
+        self.dictButtons = {
+            "123": a1,
+            "abc": a2,
+        }
+
+    def click_1(self, button):
+        button.setEnabled(False)
+        self.thread_1 = ThreadSignal()  # 创建线程
+        self.thread_1._signal.connect(lambda: self.enableButton(button))
+        self.thread_1.start()  # 开始线程
+
+    def click_2(self, button):
+        button.setEnabled(False)
+        self.thread_2 = ThreadSignal()
+        self.thread_2._signal.connect(lambda: self.enableButton(button))
+        self.thread_2.start()
+    
+    def enableButton(self, button):
+        button.setEnabled(True)
 
     def tooltip(self):
         """提示框  不过不好使唤"""
