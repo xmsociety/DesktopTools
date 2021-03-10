@@ -13,9 +13,11 @@ Last edited: 22 2 2021
 import sys
 # from PyQt5.QtWidgets import QApplication, QWidget, QDesktopWidget
 # from PyQt5.QtGui import QIcon, QFont
-from PySide2 import QtCore
+from PySide2.QtCore import QTimer
 from PySide2.QtWidgets import QApplication, QWidget, QVBoxLayout, QHBoxLayout, QLabel, QMessageBox
 from PySide2.QtGui import QIcon, QFont, QGuiApplication
+
+from tools import time_now, datetime2str
 
 
 class Main(QWidget):
@@ -25,7 +27,17 @@ class Main(QWidget):
 
         self.screen = screen
         self.initUI()
+        self.initTimer()
 
+
+    def initTimer(self):
+	# 定时器
+        self.timer = QTimer()
+        self.timer.timeout.connect(self.timeWorking)
+        self.timer.start(1 * 1000) # 1s
+
+    def timeWorking(self):
+        self.dictLabels["vtimeCounter"].setText(time_now())
 
     def initUI(self):
 
@@ -41,6 +53,7 @@ class Main(QWidget):
         self.hbox.addWidget(self.dictLabels["vtimeCounter"])
         self.vbox.addLayout(self.hbox)
         self.setLayout(self.vbox)
+
         self.show()
 
     def initBoxLayout(self):
@@ -50,8 +63,8 @@ class Main(QWidget):
 
     def initMainWidgets(self):
         self.dictLabels = {
-            "timeCounter": QLabel("工作时长"),
-            "vtimeCounter": QLabel("996h"),
+            "timeCounter": QLabel("现在时间: "),
+            "vtimeCounter": QLabel("xxxx-xx-xx xx:xx:xx"),
         }
 
     def tooltip(self):
