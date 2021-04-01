@@ -18,7 +18,7 @@ from PySide2.QtWidgets import QApplication, QWidget, QVBoxLayout, QHBoxLayout, Q
 from PySide2.QtGui import QIcon, QFont, QGuiApplication
 
 from tools import time_now, datetime2str
-from monitor import Thread_1, ThreadSignal
+from monitor import ThreadSignal, SignalKeyboard
 
 
 class Main(QWidget):
@@ -29,6 +29,7 @@ class Main(QWidget):
         self.screen = screen
         self.initUI()
         self.initTimer()
+        SignalKeyboard()
 
 
     def initTimer(self):
