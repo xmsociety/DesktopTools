@@ -28,9 +28,6 @@ class ThreadSignal(QThread):
             time.sleep(0.5)
         self._signal.emit()
 
-class LogCache:
-    pass
-
 class SignalKeyboard(QThread):
     # 有信号发出的线程,接受者可根据信号执行任务
     # _signal = Signal()
@@ -58,6 +55,7 @@ class SignalKeyboard(QThread):
 
 class SignalMouse(QThread):
     def __init__(self):
+        self.x, self.y = 0, 0
         super().__init__()
         listener = mouse.Listener(
             on_move=self.on_move,
