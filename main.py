@@ -11,6 +11,7 @@ website: https://github.com/IanVzs/Halahayawa
 Last edited: 22 2 2021
 """
 import sys
+import time
 # from PyQt5.QtWidgets import QApplication, QWidget, QDesktopWidget
 # from PyQt5.QtGui import QIcon, QFont
 from PySide2.QtCore import QTimer, QThread
@@ -18,7 +19,7 @@ from PySide2.QtWidgets import QApplication, QWidget, QVBoxLayout, QHBoxLayout, Q
 from PySide2.QtGui import QIcon, QFont, QGuiApplication
 
 from tools import time_now, datetime2str
-from monitor import ThreadSignal, SignalKeyboard, SignalMouse
+from monitor import ThreadSignal, SignalKeyboard, SignalMouse, WorkDict
 
 
 class Main(QWidget):
@@ -27,20 +28,36 @@ class Main(QWidget):
         super().__init__()
 
         self.screen = screen
+        self.work_dict = WorkDict()
         self.initUI()
         self.initTimer()
-        SignalKeyboard()
-        SignalMouse()
+        self.initMonitor()
 
+    def iamworking(self, by:str=''):
+        self.work_dict.last_time = time.time()
+        self.work_dict.count_all()
+
+    def initMonitor(self):
+        thread_kbd = SignalKeyboard()
+        thread_mouse = SignalMouse()
+
+        thread_kbd._signal.connect(lambda: self.iamworking("keyboard"))
+        thread_mouse._signal.connect(lambda: self.iamworking("mouse"))
+
+        thread_kbd.listen()
+        thread_mouse.listen()
 
     def initTimer(self):
-	# 定时器
+	    # 定时器
         self.timer = QTimer()
         self.timer.timeout.connect(self.timeWorking)
         self.timer.start(1 * 1000) # 1s
 
     def timeWorking(self):
         self.dictLabels["vtimeCounter"].setText(time_now())
+        self.dictLabels["workAll"].setText(f"已经工作: {self.work_dict.work_all}s")
+        self.work_dict.count_rest()
+        self.dictLabels["restAll"].setText(f"已经休息: {self.work_dict.rest_time}s")
 
     def initUI(self):
 
@@ -50,16 +67,19 @@ class Main(QWidget):
         self.setWindowTitle('Pendulum')
         self.setWindowIcon(QIcon('harry_potter.png'))
 
-        self.vbox, self.hbox, self.hbox2 = self.initBoxLayout()
+        self.vbox, self.hbox, self.hbox2, self.hbox3 = self.initBoxLayout()
         self.initMainWidgets()
 
         self.hbox.addWidget(self.dictLabels["timeCounter"])
         self.hbox.addWidget(self.dictLabels["vtimeCounter"])
-        self.hbox2.addWidget(self.dictButtons["123"])
-        self.hbox2.addWidget(self.dictButtons["abc"])
+        self.hbox2.addWidget(self.dictLabels["workAll"])
+        self.hbox2.addWidget(self.dictLabels["restAll"])
+        self.hbox3.addWidget(self.dictButtons["123"])
+        self.hbox3.addWidget(self.dictButtons["abc"])
 
         self.vbox.addLayout(self.hbox)
         self.vbox.addLayout(self.hbox2)
+        self.vbox.addLayout(self.hbox3)
         self.setLayout(self.vbox)
 
         self.show()
@@ -68,12 +88,15 @@ class Main(QWidget):
         vbox = QVBoxLayout()
         hbox = QHBoxLayout()
         hbox2 = QHBoxLayout()
-        return vbox, hbox, hbox2
+        hbox3 = QHBoxLayout()
+        return vbox, hbox, hbox2, hbox3
 
     def initMainWidgets(self):
         self.dictLabels = {
             "timeCounter": QLabel("现在时间: "),
             "vtimeCounter": QLabel(""),
+            "workAll": QLabel(""),
+            "restAll": QLabel(""),
         }
         a1 = QPushButton(">123", self)
         a2 = QPushButton(">abc", self)
