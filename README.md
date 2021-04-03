@@ -1,5 +1,9 @@
 # Halahayawa
 How long have you worked.
+## 进度
+### 2020.04.03:
+最基本功能已经实现啦.还有些丑,堪堪能用.
+![v0.1界面展示](https://github.com/IanVzs/Halahayawa/blob/main/showme_v0.1.png "su mua~")
 
 ## 使用
 ### 源码
@@ -35,7 +39,7 @@ Python(不会卡的太死lol)
 - 跨度: 天/周/月/年数
 
 ## 中断机制
-- 单次: 鼠标/键盘超过一分钟无任何响应
+- 单次: 鼠标/键盘超过一分钟无任何响应(现在演示为10s)
 - 单日24/0时
 - 单月/周/年 1号/星期1/1月1号0时
 
