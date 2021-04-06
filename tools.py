@@ -108,13 +108,19 @@ def count_ago(str_date: str = '', dt_date: datetime = None) -> str:
     return msg
 
 
-def time_now(ty: str = 'str'):
+def time_now(ty: str = 'str', fmt="%Y-%m-%d %H:%M:%S"):
     now = datetime.now()
     if ty == "str":
         return datetime2str(now)
     else:
         return now
 
+def today(ty: str = 'str', fmt="%Y-%m-%d"):
+    now = datetime.now()
+    if ty == "str":
+        return datetime2str(now, fmt=fmt)
+    else:
+        return now
 
 def md5_convert(string):
     """

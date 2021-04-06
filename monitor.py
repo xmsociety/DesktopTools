@@ -1,8 +1,10 @@
 import time
 from pynput import keyboard, mouse
+from sqlalchemy import create_engine
 from PySide2.QtCore import QThread, Signal
 
 from logger import logger
+from data_alchemy.inputs import add_count_keymouse
 
 class WorkDict:
     start_time = time.time()
@@ -58,11 +60,20 @@ class SignalKeyboard(QThread):
         )
         listener.start()
 
-    def log_event(self, name, key):
+    def log_event(self, name, key, save=0):
         try:
-            logger.debug(f"{key.char}&{name}")
-        except AttributeError:
-            logger.debug(f"{key._name_}&{name}")
+            char_name = key.__dict__.get("char")
+            if char_name:
+                char_name = key.char
+                event_name = name
+            else:
+                char_name = key._name_
+                event_name = name
+            if save:
+                save = add_count_keymouse(char_name, 1)
+            logger.debug(f"{char_name}&{event_name}&save_{save}")
+        except AttributeError as err:
+            logger.error(f"keyboard event catch error: {err} => {key}")
 
     def on_press(self, key):
         self.log_event("pressed", key)
@@ -92,10 +103,14 @@ class SignalMouse(QThread):
 
     def on_click(self, x, y, button, pressed):
         action = 'Pressed' if pressed else 'Released'
-        logger.debug(f"{button._name_}&{action}&({x},{y})")
+        sign = 0
+        if pressed:
+            sign = add_count_keymouse(button._name_, 0)
+        logger.debug(f"{button._name_}&{action}&({x},{y})&save_{sign}")
         self._signal.emit()
 
     def on_scroll(self, x, y, dx, dy):
-        logger.debug(f"scroll&({dx},{dy})&({x},{y})")
+        sign = add_count_keymouse("scroll", 0)
+        logger.debug(f"scroll&({dx},{dy})&({x},{y})&save_{sign}")
         self._signal.emit()
 
