@@ -31,6 +31,34 @@ Python(不会卡的太死lol)
 - PySide2: 实现简单界面(不想用其它包,卡的不死^_^, 有MIT的实现方式欢迎改造)
 - pynput: 监控鼠标键盘
 - sqlalchemy: 数据库ORM,手拼字符累了,试试新东西
+- yapf: 代码格式化 
+#### yapf
+查看工具格式将修改哪些地方 和 应用修改, 配置文件`.style.yapf`
+```bash
+python3 -m yapf . -d -r
+python3 -m yapf . -i -r
+```
+如果代码中某一段不想用yapf格式化
+```python
+# yapf: disable
+a = {
+    "666": "999",
+    "999": "666"
+}
+mat = [
+    [1, 2, 3, 4, 5],
+    [1, 2, 3, 4, 5]
+]
+# yapf: enable
+```
+或
+```python
+mat = [
+    [1, 2, 3, 4, 5],
+    [1, 2, 3, 4, 5]
+] # yapf: disable
+```
+
 
 ## 包含信息
 - 当前单次连续工作时长 历史最大/最小
