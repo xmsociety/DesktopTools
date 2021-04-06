@@ -49,7 +49,7 @@ class Main(QWidget):
         # 定时器
         self.timer = QTimer()
         self.timer.timeout.connect(self.timeWorking)
-        self.timer.start(1 * 1000)  # 1s
+        self.timer.start(1 * 1000)    # 1s
 
     def timeWorking(self):
         self.dictLabels["vtimeCounter"].setText(time_now())
@@ -108,9 +108,9 @@ class Main(QWidget):
 
     def click_1(self, button):
         button.setEnabled(False)
-        self.thread_1 = ThreadSignal()  # 创建线程
+        self.thread_1 = ThreadSignal()    # 创建线程
         self.thread_1._signal.connect(lambda: self.enableButton(button))
-        self.thread_1.start()  # 开始线程
+        self.thread_1.start()    # 开始线程
 
     def click_2(self, button):
         button.setEnabled(False)

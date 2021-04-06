@@ -35,7 +35,7 @@ class ThreadSimple(QThread):
         values = [1, 2, 3, 4, 5]
         for i in values:
             print(i)
-            time.sleep(0.5)  # 休眠
+            time.sleep(0.5)    # 休眠
 
 
 class ThreadSignal(QThread):
