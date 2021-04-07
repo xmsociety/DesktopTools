@@ -87,7 +87,6 @@ class CounterDialog(QDialog):
         data = []
         for item in inputs.iter_count_on():
             data.append((item.name, item.count))
-        print(data)
         self.initTable(data)
         return data
 
