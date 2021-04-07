@@ -76,7 +76,7 @@ class SignalKeyboard(QThread):
             logger.error(f"keyboard event catch error: {err} => {key}")
 
     def on_press(self, key):
-        self.log_event("pressed", key)
+        self.log_event("pressed", key, save=1)
 
     def on_release(self, key):
         self.log_event("released", key)
