@@ -90,8 +90,8 @@ KeyMouse.__table__.create(engine, checkfirst=True)
 
 def add_count_keymouse(char_name, device) -> int:
     try:
-        key_mouse = session.query(KeyMouse).filter_by(name=char_name).filter(
-            KeyMouse.create_time.like(today() + '%')).first()
+        key_mouse = session.query(KeyMouse).filter(
+            KeyMouse.name == char_name, KeyMouse.create_time.like(today() + '%')).first()
         if key_mouse:
             key_mouse.count += 1
         else:
