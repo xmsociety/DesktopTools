@@ -1,18 +1,17 @@
-from sqlalchemy import create_engine, UniqueConstraint
+from sqlalchemy import create_engine, UniqueConstraint, desc
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy import Column, Integer, String, Date, Time, DateTime, SmallInteger, CHAR, func, text
 from sqlalchemy.orm import sessionmaker
 
 from tools import datetime2str, today
+from args import args
 # check_same_thread 不检测是否和创建线程为同一线程--可供多线程使用
 # echo 输出具体执行的sql语句
 engine = create_engine('sqlite:///myData.db?check_same_thread=False',
-                       echo=True)
+                       echo=bool(args.debug))
 
 # 增查改删（CRUD）操作需要使用session进行操作
 Session = sessionmaker(bind=engine)
-# 创建Session类实例
-session = Session()
 
 # 基本映射类,子孙们都需要继承它
 Base = declarative_base()
@@ -90,6 +89,8 @@ KeyMouse.__table__.create(engine, checkfirst=True)
 
 def add_count_keymouse(char_name, device) -> int:
     try:
+        # 创建Session类实例
+        session = Session()
         key_mouse = session.query(KeyMouse).filter(
             KeyMouse.name == char_name,
             KeyMouse.create_time.like(today() + '%')).first()
@@ -100,8 +101,17 @@ def add_count_keymouse(char_name, device) -> int:
             key_mouse.count = 1
             session.add(key_mouse)
         session.commit()
+        session.close()
         return 1
     except Exception as err:
         print(err)
         pass
         return 0
+
+
+def iter_count_on(date=today()) -> iter:
+    session = Session()
+    iter_count = session.query(KeyMouse).order_by(desc(KeyMouse.count)).filter(
+        KeyMouse.create_time.like(date + '%'))
+    session.close()
+    return iter_count

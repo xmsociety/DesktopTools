@@ -4,6 +4,9 @@ How long have you worked.
 ### 2020.04.03:
 最基本功能已经实现啦.还有些丑,堪堪能用.
 ![v0.1界面展示](https://github.com/IanVzs/Halahayawa/blob/main/showme_v0.1.png "su mua~")
+### 2020.04.07:
+增加了记录按键此处展示
+![v0.2界面展示](https://github.com/IanVzs/Halahayawa/blob/main/showme_v0.2.png "ha ha~")
 
 ## 使用
 ### 源码
@@ -79,3 +82,6 @@ pass
 pass
 ### 月中连续N天/M周超过C/Cc小时提醒
 pass
+
+## 问题
+多线程开启另一个页面，会不正常退出，线程不能正常关闭

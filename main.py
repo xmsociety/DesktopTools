@@ -19,6 +19,7 @@ from PySide2.QtGui import QIcon, QFont, QGuiApplication
 
 from tools import time_now, datetime2str
 from monitor import ThreadSignal, SignalKeyboard, SignalMouse, WorkDict
+from app.input_counter import ThreadCounter
 
 
 class Main(QWidget):
@@ -97,7 +98,7 @@ class Main(QWidget):
             "workAll": QLabel(""),
             "restAll": QLabel(""),
         }
-        a1 = QPushButton(">123", self)
+        a1 = QPushButton("couner", self)
         a2 = QPushButton(">abc", self)
         a1.clicked.connect(lambda: self.click_1(a1))
         a2.clicked.connect(lambda: self.click_2(a2))
@@ -107,9 +108,9 @@ class Main(QWidget):
         }
 
     def click_1(self, button):
-        button.setEnabled(False)
-        self.thread_1 = ThreadSignal()    # 创建线程
-        self.thread_1._signal.connect(lambda: self.enableButton(button))
+        # button.setEnabled(False)
+        self.thread_1 = ThreadCounter(self.screen)    # 创建线程
+        # self.thread_1._signal.connect(lambda: self.enableButton(button))
         self.thread_1.start()    # 开始线程
 
     def click_2(self, button):
