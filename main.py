@@ -1,6 +1,5 @@
 #!/usr/bin/python3
 # -*- coding: utf-8 -*-
-
 """
 Pendulum PySide2 Main
 
@@ -23,7 +22,6 @@ from monitor import ThreadSignal, SignalKeyboard, SignalMouse, WorkDict
 
 
 class Main(QWidget):
-
     def __init__(self, screen=False):
         super().__init__()
 
@@ -33,7 +31,7 @@ class Main(QWidget):
         self.initTimer()
         self.initMonitor()
 
-    def iamworking(self, by:str=''):
+    def iamworking(self, by: str = ''):
         self.work_dict.last_time = time.time()
         self.work_dict.count_all()
 
@@ -48,16 +46,17 @@ class Main(QWidget):
         thread_mouse.listen()
 
     def initTimer(self):
-	    # 定时器
+        # 定时器
         self.timer = QTimer()
         self.timer.timeout.connect(self.timeWorking)
-        self.timer.start(1 * 1000) # 1s
+        self.timer.start(1 * 1000)    # 1s
 
     def timeWorking(self):
         self.dictLabels["vtimeCounter"].setText(time_now())
         self.dictLabels["workAll"].setText(f"已经工作: {self.work_dict.work_all}s")
         self.work_dict.count_rest()
-        self.dictLabels["restAll"].setText(f"已经休息: {self.work_dict.rest_time}s")
+        self.dictLabels["restAll"].setText(
+            f"已经休息: {self.work_dict.rest_time}s")
 
     def initUI(self):
 
@@ -109,16 +108,16 @@ class Main(QWidget):
 
     def click_1(self, button):
         button.setEnabled(False)
-        self.thread_1 = ThreadSignal()  # 创建线程
+        self.thread_1 = ThreadSignal()    # 创建线程
         self.thread_1._signal.connect(lambda: self.enableButton(button))
-        self.thread_1.start()  # 开始线程
+        self.thread_1.start()    # 开始线程
 
     def click_2(self, button):
         button.setEnabled(False)
         self.thread_2 = ThreadSignal()
         self.thread_2._signal.connect(lambda: self.enableButton(button))
         self.thread_2.start()
-    
+
     def enableButton(self, button):
         button.setEnabled(True)
 
@@ -137,10 +136,10 @@ class Main(QWidget):
     def closeEvent(self, event):
         """退出确认"""
         # TODO 测试期嫌累
-        return 
-        reply = QMessageBox.question(self, 'Message',
-            "Are you sure to quit?", QMessageBox.Yes | 
-            QMessageBox.No, QMessageBox.Yes)
+        return
+        reply = QMessageBox.question(self, 'Message', "Are you sure to quit?",
+                                     QMessageBox.Yes | QMessageBox.No,
+                                     QMessageBox.Yes)
 
         if reply == QMessageBox.Yes:
             event.accept()
@@ -164,7 +163,7 @@ class Main(QWidget):
         size = self.geometry()
         screen = self.screen
         self.move((screen.width() - size.width()) / 2,
-            (screen.height() - size.height()) / 2)
+                  (screen.height() - size.height()) / 2)
         # 此方法不警告了,不过多屏居中会..居中在所有屏幕总和的中间
 
 

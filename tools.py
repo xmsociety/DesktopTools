@@ -42,7 +42,8 @@ def str2datetime(data, fmt="%Y-%m-%d %H:%M:%S"):
 
 def datetime2int(data, unit='s'):
     result = 0
-    if data and isinstance(data, str) and len(data) == len("2021-01-18 14:55:00"):
+    if data and isinstance(data,
+                           str) and len(data) == len("2021-01-18 14:55:00"):
         data = str2datetime(data)
     if data and isinstance(data, datetime):
         result = int(time.mktime(data.timetuple()))
@@ -115,12 +116,14 @@ def time_now(ty: str = 'str', fmt="%Y-%m-%d %H:%M:%S"):
     else:
         return now
 
+
 def today(ty: str = 'str', fmt="%Y-%m-%d"):
     now = datetime.now()
     if ty == "str":
         return datetime2str(now, fmt=fmt)
     else:
         return now
+
 
 def md5_convert(string):
     """
@@ -140,4 +143,3 @@ def check_keys(keys, must=None) -> bool:
         return False
     else:
         return True
-
