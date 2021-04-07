@@ -6,7 +6,8 @@ from sqlalchemy.orm import sessionmaker
 from tools import datetime2str, today
 # check_same_thread 不检测是否和创建线程为同一线程--可供多线程使用
 # echo 输出具体执行的sql语句
-engine = create_engine('sqlite:///myData.db?check_same_thread=False', echo=True)
+engine = create_engine('sqlite:///myData.db?check_same_thread=False',
+                       echo=True)
 
 # 增查改删（CRUD）操作需要使用session进行操作
 Session = sessionmaker(bind=engine)
@@ -15,7 +16,6 @@ session = Session()
 
 # 基本映射类,子孙们都需要继承它
 Base = declarative_base()
-
 """
 # 查看映射对应的表
 KeyMouse.__table__
@@ -39,6 +39,7 @@ Base.metadata.create_all(engine, checkfirst=True)
 # sqlacodegen mysql+pymysql://user:password@localhost/dbname [--tables table_name1,table_name2] [--outfile model.py]
 """
 
+
 # 定义映射类KeyMouse,其继承上一步创建的Base
 class KeyMouse(Base):
     """
@@ -59,27 +60,38 @@ class KeyMouse(Base):
 
     # 指定本类映射到`keymouse`表
     __tablename__ = 'keymouse'
-    
+
     # 指定id映射到id字段; id字段为整型,为主键,自动增长(其实整型主键默认就自动增长)
     id = Column(Integer, primary_key=True, autoincrement=True)
     # 指定name映射到name字段; name字段为字符串类形
     name = Column(CHAR(1), nullable=False)
-    create_time = Column(DateTime, server_default=func.now(), comment='创建时间 datetime')
-    update_time = Column(DateTime, server_default=func.now(), onupdate=func.now(), comment='修改时间')
+    create_time = Column(DateTime,
+                         server_default=func.now(),
+                         comment='创建时间 datetime')
+    update_time = Column(DateTime,
+                         server_default=func.now(),
+                         onupdate=func.now(),
+                         comment='修改时间')
     count = Column(Integer, server_default=text('1'), comment='次数统计')
-    device = Column(SmallInteger, nullable=False, server_default=text('0'), comment='设备1: 键盘, 0: 鼠标')
+    device = Column(SmallInteger,
+                    nullable=False,
+                    server_default=text('0'),
+                    comment='设备1: 键盘, 0: 鼠标')
     UniqueConstraint('name', 'date', name='fcx_name_date')
+
     # __repr__方法用于输出该类的对象被print()时输出的字符串,如果不想写可以不写
     def __repr__(self):
         return "<KeyMouse(name='%s', create_time='%s', count='%d')>" % (
-                   self.name, datetime2str(self.create_time), self.count)
+            self.name, datetime2str(self.create_time), self.count)
+
 
 KeyMouse.__table__.create(engine, checkfirst=True)
 
 
 def add_count_keymouse(char_name, device) -> int:
     try:
-        key_mouse = session.query(KeyMouse).filter_by(name=char_name).filter(KeyMouse.create_time.like(today()+'%')).first()
+        key_mouse = session.query(KeyMouse).filter_by(name=char_name).filter(
+            KeyMouse.create_time.like(today() + '%')).first()
         if key_mouse:
             key_mouse.count += 1
         else:
