@@ -1,3 +1,5 @@
 pynput
 pyside2
 loguru
+sqlalchemy
+yapf
