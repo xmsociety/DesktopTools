@@ -114,6 +114,7 @@ class SignalMouse(QThread):
         self._signal.emit()
 
     def on_scroll(self, x, y, dx, dy):
-        sign = add_count_keymouse("scroll", 0)
+        direction = f"({dx},{dy})"
+        sign = add_count_keymouse(f"scroll_{direction}", 0)
         logger.debug(f"scroll&({dx},{dy})&({x},{y})&save_{sign}")
         self._signal.emit()

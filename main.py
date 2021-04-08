@@ -19,7 +19,7 @@ from PySide2.QtGui import QIcon, QFont, QGuiApplication
 
 from tools import time_now, datetime2str
 from monitor import ThreadSignal, SignalKeyboard, SignalMouse, WorkDict
-from app.input_counter import ThreadCounter
+from app import input_counter
 
 
 class Main(QWidget):
@@ -102,7 +102,8 @@ class Main(QWidget):
         a2 = QPushButton(">abc", self)
 
         # a1.clicked.connect(lambda: self.click_1(a1))
-        a1.clicked.connect(self.show_count)
+        # a1.clicked.connect(self.show_count)
+        a1.clicked.connect(lambda: input_counter.show_count(self.screen))
         a2.clicked.connect(lambda: self.click_2(a2))
         self.dictButtons = {
             "123": a1,
@@ -110,19 +111,9 @@ class Main(QWidget):
         }
 
     def show_count(self):
-        from app import input_counter
         table = input_counter.CounterDialog(self.screen)
         table.setWindowModality(Qt.ApplicationModal)
         table.exec_()
-
-    def click_1(self, button):
-        # button.setEnabled(False)
-        # pyside开启窗口貌似自己实现了多线程,不用特意使用...
-        # 反而还会引起关闭窗口无法正常结束线程错误
-        # 所以此方法作废,看来是单一界面有处理事件时才需特殊开启
-        self.thread_1 = ThreadCounter(self.screen)
-        # self.thread_1._signal.connect(lambda: self.enableButton(button))
-        self.thread_1.start()    # 开始线程
 
     def click_2(self, button):
         button.setEnabled(False)

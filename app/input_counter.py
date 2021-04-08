@@ -126,7 +126,25 @@ class CounterDialog(QDialog):
         #     event.ignore()
 
 
+def show_count(screen):
+    table = CounterDialog(screen)
+    table.setWindowModality(Qt.ApplicationModal)
+    table.exec_()
+
+
+"""
+此方法作废,会在关闭窗口后无法正常结束线程引发主程序崩溃错误
+
 class ThreadCounter(QThread):
+    # def click_1(self, button): 从main.py中移到这儿了. 代码备份,以后有地方用到再搬
+    #     # button.setEnabled(False)
+    #     # pyside开启窗口貌似自己实现了多线程,不用特意使用...
+    #     # 反而还会引起关闭窗口无法正常结束线程错误
+    #     # 所以此方法作废,看来是单一界面有处理事件时才需特殊开启
+    #     self.thread_1 = ThreadCounter(self.screen)
+    #     # self.thread_1._signal.connect(lambda: self.enableButton(button))
+    #     self.thread_1.start()    # 开始线程
+
     def __init__(self, screen):
         super().__init__()
         self.show_dialog(screen)
@@ -135,3 +153,4 @@ class ThreadCounter(QThread):
         dlg = CounterDialog(screen)
         dlg.setWindowModality(Qt.ApplicationModal)
         dlg.exec_()
+"""
