@@ -76,7 +76,7 @@ class SignalKeyboard(QThread):
                 event_name = name
             if save:
                 save = add_count_keymouse(char_name, 1)
-            logger.debug(f"{char_name}&{event_name}&save_{save}")
+            logger.info(f"{char_name}&{event_name}&save_{save}")
         except AttributeError as err:
             logger.error(f"keyboard event catch error: {err} => {key}")
 
@@ -110,11 +110,11 @@ class SignalMouse(QThread):
         sign = 0
         if pressed:
             sign = add_count_keymouse(button._name_, 0)
-        logger.debug(f"{button._name_}&{action}&({x},{y})&save_{sign}")
+        logger.info(f"{button._name_}&{action}&({x},{y})&save_{sign}")
         self._signal.emit()
 
     def on_scroll(self, x, y, dx, dy):
         direction = f"({dx},{dy})"
         sign = add_count_keymouse(f"scroll_{direction}", 0)
-        logger.debug(f"scroll&({dx},{dy})&({x},{y})&save_{sign}")
+        logger.info(f"scroll&({dx},{dy})&({x},{y})&save_{sign}")
         self._signal.emit()
