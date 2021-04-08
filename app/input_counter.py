@@ -91,6 +91,8 @@ class CounterDialog(QDialog):
         return data
 
     def initUI(self):
+        self.setWindowTitle("Input Counter")
+
         self.hbox = QHBoxLayout()
         self.vbox = QVBoxLayout()
 
@@ -131,6 +133,5 @@ class ThreadCounter(QThread):
 
     def show_dialog(self, screen):
         dlg = CounterDialog(screen)
-        dlg.setWindowTitle("Input Counter")
         dlg.setWindowModality(Qt.ApplicationModal)
         dlg.exec_()

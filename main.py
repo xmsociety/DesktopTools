@@ -13,7 +13,7 @@ import sys
 import time
 # from PyQt5.QtWidgets import QApplication, QWidget, QDesktopWidget
 # from PyQt5.QtGui import QIcon, QFont
-from PySide2.QtCore import QTimer, QThread
+from PySide2.QtCore import QTimer, QThread, Qt
 from PySide2.QtWidgets import QApplication, QWidget, QVBoxLayout, QHBoxLayout, QLabel, QMessageBox, QPushButton
 from PySide2.QtGui import QIcon, QFont, QGuiApplication
 
@@ -100,24 +100,36 @@ class Main(QWidget):
         }
         a1 = QPushButton("couner", self)
         a2 = QPushButton(">abc", self)
-        a1.clicked.connect(lambda: self.click_1(a1))
+
+        # a1.clicked.connect(lambda: self.click_1(a1))
+        a1.clicked.connect(self.show_count)
         a2.clicked.connect(lambda: self.click_2(a2))
         self.dictButtons = {
             "123": a1,
             "abc": a2,
         }
 
+    def show_count(self):
+        from app import input_counter
+        table = input_counter.CounterDialog(self.screen)
+        table.setWindowModality(Qt.ApplicationModal)
+        table.exec_()
+
     def click_1(self, button):
         # button.setEnabled(False)
-        self.thread_1 = ThreadCounter(self.screen)    # 创建线程
+        # pyside开启窗口貌似自己实现了多线程,不用特意使用...
+        # 反而还会引起关闭窗口无法正常结束线程错误
+        # 所以此方法作废,看来是单一界面有处理事件时才需特殊开启
+        self.thread_1 = ThreadCounter(self.screen)
         # self.thread_1._signal.connect(lambda: self.enableButton(button))
         self.thread_1.start()    # 开始线程
 
     def click_2(self, button):
         button.setEnabled(False)
-        self.thread_2 = ThreadSignal()
-        self.thread_2._signal.connect(lambda: self.enableButton(button))
-        self.thread_2.start()
+        self.thread_2 = ThreadSignal()    # 创建线程
+        self.thread_2._signal.connect(
+            lambda: self.enableButton(button))    # 借用lambda实现带参
+        self.thread_2.start()    # 开始线程
 
     def enableButton(self, button):
         button.setEnabled(True)
