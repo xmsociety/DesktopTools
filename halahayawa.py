@@ -17,9 +17,11 @@ from PySide2.QtCore import QTimer, QThread, Qt
 from PySide2.QtWidgets import QApplication, QWidget, QVBoxLayout, QHBoxLayout, QLabel, QMessageBox, QPushButton
 from PySide2.QtGui import QIcon, QFont, QGuiApplication
 
-from tools import time_now, datetime2str
+from tools import time_now, datetime2str, lenth_time
 from monitor import ThreadSignal, SignalKeyboard, SignalMouse, WorkDict
 from app import input_counter
+from logger import slogger
+from args import KEYBOARD, MOUSE, KEYBOARD_DeviceNo, MOUSE_DeviceNo
 
 
 class Main(QWidget):
@@ -34,14 +36,19 @@ class Main(QWidget):
 
     def iamworking(self, by: str = ''):
         self.work_dict.last_time = time.time()
-        self.work_dict.count_all()
+        if KEYBOARD == by:
+            self.work_dict.fill_work_by(KEYBOARD_DeviceNo)
+        elif MOUSE == by:
+            self.work_dict.fill_work_by(MOUSE_DeviceNo)
+        else:
+            slogger.error(f"working can't by {by}")
 
     def initMonitor(self):
         thread_kbd = SignalKeyboard()
         thread_mouse = SignalMouse()
 
-        thread_kbd._signal.connect(lambda: self.iamworking("keyboard"))
-        thread_mouse._signal.connect(lambda: self.iamworking("mouse"))
+        thread_kbd._signal.connect(lambda: self.iamworking(KEYBOARD))
+        thread_mouse._signal.connect(lambda: self.iamworking(MOUSE))
 
         thread_kbd.listen()
         thread_mouse.listen()
@@ -53,11 +60,13 @@ class Main(QWidget):
         self.timer.start(1 * 1000)    # 1s
 
     def timeWorking(self):
-        self.dictLabels["vtimeCounter"].setText(time_now())
-        self.dictLabels["workAll"].setText(f"已经工作: {self.work_dict.work_all}s")
-        self.work_dict.count_rest()
+        self.work_dict.summarize()
+
+        self.dictLabels["vtimeNow"].setText(time_now())
+        self.dictLabels["workAll"].setText(
+            f"已经工作: {lenth_time(self.work_dict.work_all)}")
         self.dictLabels["restAll"].setText(
-            f"已经休息: {self.work_dict.rest_time}s")
+            f"已经休息: {lenth_time(self.work_dict.rest_time)}")
 
     def initUI(self):
 
@@ -70,8 +79,8 @@ class Main(QWidget):
         self.vbox, self.hbox, self.hbox2, self.hbox3 = self.initBoxLayout()
         self.initMainWidgets()
 
-        self.hbox.addWidget(self.dictLabels["timeCounter"])
-        self.hbox.addWidget(self.dictLabels["vtimeCounter"])
+        self.hbox.addWidget(self.dictLabels["timeNow"])
+        self.hbox.addWidget(self.dictLabels["vtimeNow"])
         self.hbox2.addWidget(self.dictLabels["workAll"])
         self.hbox2.addWidget(self.dictLabels["restAll"])
         self.hbox3.addWidget(self.dictButtons["123"])
@@ -93,8 +102,8 @@ class Main(QWidget):
 
     def initMainWidgets(self):
         self.dictLabels = {
-            "timeCounter": QLabel("现在时间: "),
-            "vtimeCounter": QLabel(""),
+            "timeNow": QLabel("现在时间: "),
+            "vtimeNow": QLabel(""),
             "workAll": QLabel(""),
             "restAll": QLabel(""),
         }
@@ -102,18 +111,12 @@ class Main(QWidget):
         a2 = QPushButton(">abc", self)
 
         # a1.clicked.connect(lambda: self.click_1(a1))
-        # a1.clicked.connect(self.show_count)
         a1.clicked.connect(lambda: input_counter.show_count(self.screen))
         a2.clicked.connect(lambda: self.click_2(a2))
         self.dictButtons = {
             "123": a1,
             "abc": a2,
         }
-
-    def show_count(self):
-        table = input_counter.CounterDialog(self.screen)
-        table.setWindowModality(Qt.ApplicationModal)
-        table.exec_()
 
     def click_2(self, button):
         button.setEnabled(False)

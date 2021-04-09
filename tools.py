@@ -143,3 +143,15 @@ def check_keys(keys, must=None) -> bool:
         return False
     else:
         return True
+
+
+def lenth_time(secend: int) -> str:
+    show = ''
+    power = 2
+    dict_power = {2: 'h', 1: 'm', 0: 's'}
+    while secend:
+        num, secend = secend // (60**power), secend % (60**power)
+        if num:
+            show += f"{num}{dict_power[power]}"
+        power -= 1
+    return show
