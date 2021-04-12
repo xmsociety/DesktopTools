@@ -14,7 +14,7 @@ How long have you worked.
 2. 相加一个主界面的轮询线程间隔可配置,现在是1s一次,好像也没啥必要.搞成5s也完全可以的.
 ### 2020.04.12:
 - 增加了消息提醒
-- 增加了主界面显示纬度(现在有连续统计和总两个纬度)
+- 增加了主界面显示维度(现在有连续统计和总两个维度)
 ![v0.3界面展示](https://github.com/IanVzs/Halahayawa/blob/main/showme_v0.3.png "niu bi~")
 
 ## 使用
