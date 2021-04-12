@@ -19,9 +19,10 @@ from PySide2.QtGui import QIcon, QFont, QGuiApplication
 
 from tools import time_now, datetime2str, lenth_time
 from monitor import ThreadSignal, SignalKeyboard, SignalMouse, WorkDict
-from app import input_counter
+from app import input_counter, msg_systray
 from logger import slogger
-from args import KEYBOARD, MOUSE, KEYBOARD_DeviceNo, MOUSE_DeviceNo
+from args import KEYBOARD, MOUSE, KEYBOARD_DeviceNo, MOUSE_DeviceNo, args
+from data_alchemy.models import WorkInfo
 
 
 class Main(QWidget):
@@ -53,20 +54,43 @@ class Main(QWidget):
         thread_kbd.listen()
         thread_mouse.listen()
 
+    def show_rest_msg(self):
+        line = self.work_dict.status_continued.get(
+            WorkInfo.type_map_reverse["工作"], 0)
+
+        if line >= args.threshold * 60 and line < args.threshold * 60 * 1.5:
+            self.tray.showYouNeedRest("你该休息了.")
+        elif line > args.threshold * 60 * 1.5:
+            self.tray.showYouNeedRest("您必须休息了！！！！")
+
     def initTimer(self):
         # 定时器
+        self.dictLabels["workAll"].setText(f"已经持续工作: 0s\n本次总工作: 0s")
+        self.dictLabels["restAll"].setText(f"已经休息: 0s\n本次总小憩: 0s")
         self.timer = QTimer()
+        self.timerRest = QTimer()
         self.timer.timeout.connect(self.timeWorking)
+        self.timerRest.timeout.connect(self.show_rest_msg)
         self.timer.start(1 * 1000)    # 1s
+        self.timerRest.start(10 * 1000)    # 10s
 
     def timeWorking(self):
         self.work_dict.summarize()
 
         self.dictLabels["vtimeNow"].setText(time_now())
-        self.dictLabels["workAll"].setText(
-            f"已经工作: {lenth_time(self.work_dict.work_all)}")
-        self.dictLabels["restAll"].setText(
-            f"已经休息: {lenth_time(self.work_dict.rest_time)}")
+
+        work_tm = self.work_dict.status_continued.get(
+            WorkInfo.type_map_reverse["工作"], 0)
+        rest_tm = self.work_dict.status_continued.get(
+            WorkInfo.type_map_reverse["小憩"], 0)
+        if work_tm:
+            self.dictLabels["workAll"].setText(
+                f"已经持续工作: {lenth_time(work_tm)}\n本次总工作: {lenth_time(self.work_dict.work_all)}"
+            )
+        elif rest_tm:
+            self.dictLabels["restAll"].setText(
+                f"已经休息: {lenth_time(rest_tm)}\n本次总小憩: {lenth_time(self.work_dict.rest_time)}"
+            )
 
     def initUI(self):
 
@@ -90,6 +114,9 @@ class Main(QWidget):
         self.vbox.addLayout(self.hbox2)
         self.vbox.addLayout(self.hbox3)
         self.setLayout(self.vbox)
+
+        self.tray = msg_systray.TrayIcon(self)
+        self.tray.show()
 
         self.show()
 
@@ -139,6 +166,11 @@ class Main(QWidget):
         btn.setToolTip('This is a <b>QPushButton</b> widget')
         btn.resize(btn.sizeHint())
         # btn.move(50, 50)
+
+    def exit(self):
+        # 退出程序
+        qApp = QApplication.instance()
+        qApp.quit()
 
     def closeEvent(self, event):
         """退出确认"""

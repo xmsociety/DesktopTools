@@ -11,6 +11,10 @@ parser.add_argument("--localtime",
                     type=bool,
                     choices=[True, False],
                     help="use localtime? True/False")
+parser.add_argument("--threshold",
+                    type=int,
+                    default=30,
+                    help="rest threshold? n /min")
 
 args = parser.parse_args()
 
