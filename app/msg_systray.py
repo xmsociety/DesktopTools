@@ -35,7 +35,7 @@ class TrayIcon(QSystemTrayIcon):
         self.messageClicked.connect(self.msgClickEvent)
 
         #设置图标
-        self.setIcon(QIcon("harry_potter.png"))
+        self.setIcon(QIcon("harry_potter.ico"))
         self.icon = self.MessageIcon()
 
     def iconClicked(self, reason):
