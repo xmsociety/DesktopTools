@@ -35,7 +35,7 @@ class TrayIcon(QSystemTrayIcon):
         self.messageClicked.connect(self.msgClickEvent)
 
         #设置图标
-        self.setIcon(QIcon("harry_potter.png"))
+        self.setIcon(QIcon("harry_potter.ico"))
         self.icon = self.MessageIcon()
 
     def iconClicked(self, reason):
@@ -48,7 +48,11 @@ class TrayIcon(QSystemTrayIcon):
                 pw.show()
 
     def msgClickEvent(self):
-        # TODO 没有生效
+        """
+        Ubuntu没有生效,我的树莓派是生效的
+        看来是GNOME在消息点击事件上实现
+        和大家不太一致导致的
+        """
         self.showMessage("提示", "---", self.icon)
 
     def showYouNeedRest(self, msg="主动点击测试"):

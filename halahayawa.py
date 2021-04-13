@@ -98,7 +98,7 @@ class Main(QWidget):
         # self.setGeometry(300, 300, 300, 220)
         self.center()
         self.setWindowTitle('Pendulum')
-        self.setWindowIcon(QIcon('harry_potter.png'))
+        self.setWindowIcon(QIcon('harry_potter.ico'))
 
         self.vbox, self.hbox, self.hbox2, self.hbox3 = self.initBoxLayout()
         self.initMainWidgets()

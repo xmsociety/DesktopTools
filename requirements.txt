@@ -3,3 +3,4 @@ pyside2
 loguru
 sqlalchemy
 yapf
+pyinstaller

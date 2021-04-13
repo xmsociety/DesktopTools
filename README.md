@@ -31,6 +31,18 @@ python main.py
 可根据实际情况进行适当调整
 
 ### 可执行程序
+#### windows
+`--icon`经测必须使用绝对路径.
+```bash
+pyinstaller --specpath=executable_files --distpath=executable_files --hidden-import=pynput.keyboard._xorg --hidden-import=pynput.mouse._xorg --hidden-import=sqlalchemy.sql.default_comparator --hidden-import=sqlalchemy.ext.baked --icon="C:\\Users\\USERNAME\\Desktop\\Halahayawa\\harry_potter.ico" -w -D --clean halahayawa.py
+
+# cp harry_potter.ico executable_files/halahayawa 复制harry_potter.ico到程序目录
+```
+#### linux
+```
+pyinstaller --specpath=executable_files --distpath=executable_files --hidden-import=pynput.keyboard._xorg --hidden-import=pynput.mouse._xorg --hidden-import=sqlalchemy.sql.default_comparator -w -D --clean halahayawa.py
+```
+
 ## 原理
 检测鼠标以及键盘移动/输入,判断正在工作中.
 
@@ -86,11 +98,9 @@ mat = [
 
 ## 提醒
 ### 连续工作N分钟/小时放送提醒
-pass
+默认半小时(30min), 10s一次提醒. 要终止提醒只能休息最少一分钟.
+
 ### 周中连续N天超过N小时提醒
 pass
 ### 月中连续N天/M周超过C/Cc小时提醒
 pass
-
-## 问题
-多线程开启另一个页面，会不正常退出，线程不能正常关闭

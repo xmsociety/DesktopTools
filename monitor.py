@@ -7,12 +7,12 @@ from logger import logger, slogger
 from data_alchemy.models import WorkInfo
 from data_alchemy.inputs import add_count_keymouse
 from data_alchemy.worktimes import write_work_info
-from args import KEYBOARD_DeviceNo, MOUSE_DeviceNo, TICKER_DeviceNo
+from args import KEYBOARD_DeviceNo, MOUSE_DeviceNo, TICKER_DeviceNo, args
 
 
 class WorkDict:
     start_time = time.time()
-    work_by_len = 10
+    work_by_len = args.work_buffer_len
     work_by = []
     work_all = 0
     rest_time = 0
