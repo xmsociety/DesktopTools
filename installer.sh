@@ -1,0 +1,1 @@
+pyinstaller --specpath=executable_files --distpath=executable_files --hidden-import=pynput.keyboard._xorg --hidden-import=pynput.mouse._xorg --hidden-import=sqlalchemy.sql.default_comparator -w -D halahayawa.py
