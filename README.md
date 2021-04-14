@@ -13,9 +13,11 @@ mkdir env
 python3 -m venv ./env
 source ~/env/bin/activate
 pip install -r requirements.txt -i https://pypi.tuna.tsinghua.edu.cn/simple
-python main.py
+python halahayawa.py
 ```
+
 可根据实际情况进行适当调整
+- `-i https://pypi.tuna.tsinghua.edu.cn/simple`是使用国内pip清华源, 如果有`timeout`的情况可自行搜索其他源来使用,或者不使用国内源`pip install -r requirements.txt`
 
 ### 可执行程序
 #### 下载地址
@@ -33,6 +35,7 @@ pyinstaller --specpath=executable_files --distpath=executable_files --hidden-imp
 
 ## 原理
 检测鼠标以及键盘移动/输入,判断正在工作中.
+macOS因隐私权限问题,需要额外设置,具体详参[此处](https://pynput.readthedocs.io/en/latest/limitations.html#macos)
 
 ## 实现
 ### 编程语言

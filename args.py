@@ -12,7 +12,7 @@ parser.add_argument("--localtime",
                     choices=[True, False],
                     help="use localtime? True/False")
 parser.add_argument("--threshold",
-                    type=int,
+                    type=float,
                     default=30,
                     help="rest threshold? n /min")
 parser.add_argument("--work_buffer_len",
@@ -27,3 +27,11 @@ KEYBOARD, MOUSE = "keyboard", "mouse"
 KEYBOARD_DeviceNo = 1
 MOUSE_DeviceNo = 0
 TICKER_DeviceNo = -1
+
+ERROR_CATCH_NAME = -1
+
+Alert_REST_MSG = "你该休息了."
+Alert_REST_MUST_MSG = "您必须休息了！！！！"
+Alert_REST_KEEP_MSG = "GoodJob, 继续保持."
+
+NUM_REST_KEEP_Alert = 3

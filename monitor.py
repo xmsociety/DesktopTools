@@ -7,7 +7,12 @@ from logger import logger, slogger
 from data_alchemy.models import WorkInfo
 from data_alchemy.inputs import add_count_keymouse
 from data_alchemy.worktimes import write_work_info
-from args import KEYBOARD_DeviceNo, MOUSE_DeviceNo, TICKER_DeviceNo, args
+from args import KEYBOARD_DeviceNo, MOUSE_DeviceNo, TICKER_DeviceNo, args, ERROR_CATCH_NAME, NUM_REST_KEEP_Alert
+
+
+class AlertDict:
+    alert_rest = False
+    keep_num = NUM_REST_KEEP_Alert
 
 
 class WorkDict:
@@ -119,17 +124,22 @@ class SignalKeyboard(QThread):
     def log_event(self, name, key, save=0):
         try:
             char_name = key.__dict__.get("char")
+            event_name = name
             if char_name:
                 char_name = key.char
-                event_name = name
-            else:
+            elif key.__dict__.get("_name_"):
                 char_name = key._name_
-                event_name = name
+            else:
+                char_name = ERROR_CATCH_NAME
+                logger.warning(
+                    f"keyboard event no catch warning: {name} => {key.__dict__}"
+                )
             if save:
                 save = add_count_keymouse(char_name, KEYBOARD_DeviceNo)
             logger.info(f"{char_name}&{event_name}&save_{save}")
         except AttributeError as err:
-            logger.error(f"keyboard event catch error: {err} => {key}")
+            logger.error(
+                f"keyboard event catch error: {err} => {key.__dict__}")
 
     def on_press(self, key):
         self.log_event("pressed", key, save=1)

@@ -18,10 +18,11 @@ from PySide2.QtWidgets import QApplication, QWidget, QVBoxLayout, QHBoxLayout, Q
 from PySide2.QtGui import QIcon, QFont, QGuiApplication
 
 from tools import time_now, datetime2str, lenth_time
-from monitor import ThreadSignal, SignalKeyboard, SignalMouse, WorkDict
+from monitor import ThreadSignal, SignalKeyboard, SignalMouse, WorkDict, AlertDict
 from app import input_counter, msg_systray
 from logger import slogger
 from args import KEYBOARD, MOUSE, KEYBOARD_DeviceNo, MOUSE_DeviceNo, args
+from args import Alert_REST_MSG, Alert_REST_MUST_MSG, Alert_REST_KEEP_MSG, NUM_REST_KEEP_Alert
 from data_alchemy.models import WorkInfo
 
 
@@ -55,13 +56,26 @@ class Main(QWidget):
         thread_mouse.listen()
 
     def show_rest_msg(self):
+        # 判断条件&显示提醒
         line = self.work_dict.status_continued.get(
             WorkInfo.type_map_reverse["工作"], 0)
-
-        if line >= args.threshold * 60 and line < args.threshold * 60 * 1.5:
-            self.tray.showYouNeedRest("你该休息了.")
-        elif line > args.threshold * 60 * 1.5:
-            self.tray.showYouNeedRest("您必须休息了！！！！")
+        slogger.debug(
+            f"check rest alert: line: {line}, threshold: {args.threshold}")
+        if line >= args.threshold * 60 and line <= args.threshold * 60 * 1.5:
+            AlertDict.alert_rest = True
+            self.tray.showYouNeedRest(Alert_REST_MSG, 2)
+            slogger.warning("alert show: rest >")
+        elif line >= args.threshold * 60 * 1.5:
+            AlertDict.alert_rest = True
+            self.tray.showYouNeedRest(Alert_REST_MUST_MSG, 3)
+            slogger.warning("alert show: rest must >")
+        elif AlertDict.alert_rest:
+            self.tray.showYouNeedRest(Alert_REST_KEEP_MSG, 1)
+            AlertDict.keep_num -= 1
+            if AlertDict.keep_num <= 0:
+                AlertDict.alert_rest = False
+                AlertDict.keep_num = NUM_REST_KEEP_Alert
+            slogger.info("alert show: rest keep <")
 
     def initTimer(self):
         # 定时器

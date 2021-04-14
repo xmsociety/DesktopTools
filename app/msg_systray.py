@@ -52,11 +52,33 @@ class TrayIcon(QSystemTrayIcon):
         Ubuntu没有生效,我的树莓派是生效的
         看来是GNOME在消息点击事件上实现
         和大家不太一致导致的
+
+        后经测试发现GNOME在点击其他应用的消息时会触发,点击本应用的就不触发..似乎也合理?
         """
         self.showMessage("提示", "---", self.icon)
 
-    def showYouNeedRest(self, msg="主动点击测试"):
-        self.showMessage("提醒", msg, self.icon)
+    def showYouNeedRest(self, msg="主动点击测试", level=0):
+        dict_msg = {
+            0: {
+                "desc": "消息",
+                "value": QSystemTrayIcon.NoIcon
+            },
+            1: {
+                "desc": "提示",
+                "value": QSystemTrayIcon.Information
+            },
+            2: {
+                "desc": "提醒",
+                "value": QSystemTrayIcon.Warning
+            },
+            3: {
+                "desc": "警告",
+                "value": QSystemTrayIcon.Critical
+            },
+        }
+        vlevel = dict_msg[level]["value"]
+        txt = dict_msg[level]["desc"]
+        self.showMessage(txt, msg, self.MessageIcon(vlevel))
 
     def quit(self):
         # TODO 完整的退出 不过注释掉几行也能退出,蛮奇怪,先这么吧.
