@@ -53,6 +53,9 @@ class Main(QWidget):
         thread_mouse._signal.connect(lambda: self.iamworking(MOUSE))
 
         thread_kbd.listen()
+        # MacOS 怕不是个傻子... 以下sleep修复了`AttributeError: CFMachPortCreateRunLoopSource`
+        # 也可能我是个😳😳
+        time.sleep(0.5)
         thread_mouse.listen()
 
     def show_rest_msg(self):

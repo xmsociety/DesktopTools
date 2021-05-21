@@ -62,6 +62,7 @@ activity_logs/*
 local_settings.py
 db.sqlite3
 db.sqlite3-journal
+nohup.out
 
 # sqlite3
 *.db
