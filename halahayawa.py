@@ -13,16 +13,16 @@ import sys
 import time
 # from PyQt5.QtWidgets import QApplication, QWidget, QDesktopWidget
 # from PyQt5.QtGui import QIcon, QFont
-from PySide2.QtCore import QTimer, QThread, Qt
+from PySide2.QtCore import QTimer
 from PySide2.QtWidgets import QApplication, QWidget, QVBoxLayout, QHBoxLayout, QLabel, QMessageBox, QPushButton
 from PySide2.QtGui import QIcon, QFont, QGuiApplication
 
-from tools import time_now, datetime2str, lenth_time
+from tools import time_now, lock_work_station, lenth_time
 from monitor import ThreadSignal, SignalKeyboard, SignalMouse, WorkDict, AlertDict
 from app import input_counter, msg_systray
 from logger import slogger
 from args import KEYBOARD, MOUSE, KEYBOARD_DeviceNo, MOUSE_DeviceNo, args
-from args import Alert_REST_MSG, Alert_REST_MUST_MSG, Alert_REST_KEEP_MSG, NUM_REST_KEEP_Alert
+from args import Alert_REST_MSG, Alert_REST_MUST_MSG, Alert_REST_KEEP_MSG, NUM_REST_KEEP_Alert, Alert_LockWorkStation_MSG
 from data_alchemy.models import WorkInfo
 
 
@@ -72,6 +72,7 @@ class Main(QWidget):
             AlertDict.alert_rest = True
             self.tray.showYouNeedRest(Alert_REST_MUST_MSG, 3)
             slogger.warning("alert show: rest must >")
+            lock_work_station()
         elif AlertDict.alert_rest:
             self.tray.showYouNeedRest(Alert_REST_KEEP_MSG, 1)
             AlertDict.keep_num -= 1
@@ -79,7 +80,9 @@ class Main(QWidget):
                 AlertDict.alert_rest = False
                 AlertDict.keep_num = NUM_REST_KEEP_Alert
             slogger.info("alert show: rest keep <")
-
+        # TODO 增加锁屏功能 elif line >= 1 * 60:
+            # self.tray.showYouNeedRest(Alert_LockWorkStation_MSG, 1)
+            # lock_work_station()
     def initTimer(self):
         # 定时器
         self.dictLabels["workAll"].setText(f"已经持续工作: 0s\n本次总工作: 0s")

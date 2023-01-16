@@ -5,6 +5,7 @@ author: Ian Vzs
 website: https://github.com/IanVzs/Halahayawa
 Last edited: 10 03 2021
 """
+import sys
 import time
 import json
 import hashlib
@@ -155,3 +156,16 @@ def lenth_time(secend: int) -> str:
             show += f"{num}{dict_power[power]}"
         power -= 1
     return show
+
+def lock_work_station():
+    """
+    keyboard.Controller 操作键盘不能锁屏
+    """
+    if sys.platform == "win32":
+        # Windows锁屏
+        from ctypes import windll
+        user32 = windll.LoadLibrary("user32.dll")
+        user32.LockWorkStation()
+    else:
+        # TODO 其他平台
+        pass

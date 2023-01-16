@@ -33,5 +33,6 @@ ERROR_CATCH_NAME = -1
 Alert_REST_MSG = "你该休息了."
 Alert_REST_MUST_MSG = "您必须休息了！！！！"
 Alert_REST_KEEP_MSG = "GoodJob, 继续保持."
+Alert_LockWorkStation_MSG = "即将锁屏"
 
 NUM_REST_KEEP_Alert = 3
