@@ -167,5 +167,5 @@ def lock_work_station():
         user32 = windll.LoadLibrary("user32.dll")
         user32.LockWorkStation()
     else:
-        # TODO 其他平台
+        # TODO 其他平台锁屏实现
         pass

@@ -1,9 +1,11 @@
 import sys
-from PySide2.QtGui import QIcon
-from PySide2.QtWidgets import QSystemTrayIcon, QMenu, QAction
-
+from PySide6.QtGui import QIcon, QAction
+from PySide6.QtWidgets import QSystemTrayIcon, QMenu
 
 class TrayIcon(QSystemTrayIcon):
+    """
+    系统托盘图标定义
+    """
     def __init__(self, parent=None):
         super(TrayIcon, self).__init__(parent)
         self.showMenu()
@@ -36,10 +38,10 @@ class TrayIcon(QSystemTrayIcon):
 
         #设置图标
         self.setIcon(QIcon("harry_potter.ico"))
-        self.icon = self.MessageIcon()
+        self.icon = self.MessageIcon(QSystemTrayIcon.MessageIcon.NoIcon)
 
     def iconClicked(self, reason):
-        "鼠标点击icon传递的信号会带有一个整形的值，1是表示单击右键，2是双击，3是单击左键，4是用鼠标中键点击"
+        "鼠标点击icon传递的信号会带有一个整形的值, 1是表示单击右键, 2是双击, 3是单击左键, 4是用鼠标中键点击"
         if reason == 2 or reason == 3:
             pw = self.parent()
             if pw.isVisible():

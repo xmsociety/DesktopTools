@@ -42,8 +42,8 @@ macOS因隐私权限问题,需要额外设置,具体详参[此处](https://pynpu
 Python(不会卡的太死lol)
 
 ### 所用库/包
-- PyQt5: 实现简单界面(不想用其它包,卡的比较死^_^.....弃用,因为其授权协议问题,虽然我的是MIT不要紧,但是用了它我的协议就被升级...虽然PySide2也会升级本项目授权,但比PyQt5要好.)
-- PySide2: 实现简单界面(不想用其它包,卡的不死^_^, 有MIT的实现方式欢迎改造)
+- PyQt5: 实现简单界面(不想用其它包,卡的比较死^_^.....弃用,因为其授权协议问题,虽然我的是MIT不要紧,但是用了它我的协议就被升级...虽然PySide6也会升级本项目授权,但比PyQt5要好.)
+- PySide6: 实现简单界面(不想用其它包,卡的不死^_^, 有MIT的实现方式欢迎改造)
 - pynput: 监控鼠标键盘
 - sqlalchemy: 数据库ORM,手拼字符累了,试试新东西
 - yapf: 代码格式化 
@@ -98,3 +98,34 @@ mat = [
 - [ ] 未实现
 ### 月中连续N天/M周超过C/Cc小时提醒
 - [ ] 未实现
+
+## 转换为`PySide6`
+- 安装 pyside2 -> PySide6
+- QAction
+主要是:
+```py
+from PySide6.QtWidgets import QAction
+```
+换为:
+```py
+from PySide6.QtGui import QAction
+```
+- QSystemTrayIcon
+```py
+self.icon = self.MessageIcon()
+```
+需要从Enum中指定一个
+```py
+self.icon = self.MessageIcon(QSystemTrayIcon.MessageIcon.NoIcon)
+```
+- QtChats
+```py
+from PySide2.QtCharts import QtCharts
+# PySide6 不能这么引入,不过我没用到就只是注释掉了
+```
+- 关闭进程
+新版中`exec_`将不再支持, 需要使用`exec`:
+```py
+# sys.exit(app.exec_())
+sys.exit(app.exec())
+```

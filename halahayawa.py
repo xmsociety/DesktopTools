@@ -1,9 +1,9 @@
 #!/usr/bin/python3
 # -*- coding: utf-8 -*-
 """
-Pendulum PySide2 Main
+Pendulum PySide6 Main
 
-Create a simple window in PySide2.
+Create a simple window in PySide6.
 
 author: Ian Vzs
 website: https://github.com/IanVzs/Halahayawa
@@ -13,9 +13,9 @@ import sys
 import time
 # from PyQt5.QtWidgets import QApplication, QWidget, QDesktopWidget
 # from PyQt5.QtGui import QIcon, QFont
-from PySide2.QtCore import QTimer
-from PySide2.QtWidgets import QApplication, QWidget, QVBoxLayout, QHBoxLayout, QLabel, QMessageBox, QPushButton
-from PySide2.QtGui import QIcon, QFont, QGuiApplication
+from PySide6.QtCore import QTimer
+from PySide6.QtWidgets import QApplication, QWidget, QVBoxLayout, QHBoxLayout, QLabel, QMessageBox, QPushButton
+from PySide6.QtGui import QIcon, QFont, QGuiApplication
 
 from tools import time_now, lock_work_station, lenth_time
 from monitor import ThreadSignal, SignalKeyboard, SignalMouse, WorkDict, AlertDict
@@ -209,10 +209,10 @@ class Main(QWidget):
         """
             居中
             PyQt5 没消息
-            PySide2 提示DeprecationWarning: QDesktopWidget.availableGeometry(int screen) const is deprecated
+            PySide6 提示DeprecationWarning: QDesktopWidget.availableGeometry(int screen) const is deprecated
         """
         # region Qt5
-        # from PySide2.QtWidgets import QDesktopWidget
+        # from PySide6.QtWidgets import QDesktopWidget
         # qr = self.frameGeometry()
         # cp = QDesktopWidget().availableGeometry().center()
         # qr.moveCenter(cp)
@@ -231,4 +231,4 @@ if __name__ == '__main__':
     app = QApplication(sys.argv)
     screen = app.primaryScreen().geometry()
     ex = Main(screen)
-    sys.exit(app.exec_())
+    sys.exit(app.exec())

@@ -1,9 +1,10 @@
 import operator
 
-from PySide2.QtCore import QThread, Signal, Qt, QAbstractTableModel, SIGNAL
-from PySide2.QtWidgets import QDialog, QPushButton, QMessageBox, QHBoxLayout, QVBoxLayout, QWidget, QTableView
-from PySide2.QtCharts import QtCharts
+from PySide6.QtCore import QThread, Signal, Qt, QAbstractTableModel, SIGNAL
+from PySide6.QtWidgets import QDialog, QPushButton, QMessageBox, QHBoxLayout, QVBoxLayout, QWidget, QTableView
+# from PySide2.QtCharts import QtCharts # PySide6 不能这么引入
 
+from logger import logger
 from data_alchemy import inputs
 
 
@@ -41,7 +42,7 @@ class MyTableModel(QAbstractTableModel):
 
 
 class CounterDialog(QDialog):
-    """对QDialog类重写，实现一些功能"""
+    """对QDialog类重写, 实现一些功能"""
     def __init__(self, screen=None):
         super().__init__()
         self.chat = None
@@ -108,12 +109,11 @@ class CounterDialog(QDialog):
             self.setLayout(self.vbox)
             self.show()
         else:
-            # TODO 显示个表情包吧
-            return None
+            logger.error("self.initTable(data) 需在 initUI前调用.")
 
     def closeEvent(self, event):
         """
-        重写closeEvent方法，实现dialog窗体关闭时执行一些代码
+        重写closeEvent方法, 实现dialog窗体关闭时执行一些代码
         :param event: close()触发的事件
         :return: None
         """

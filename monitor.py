@@ -1,7 +1,7 @@
 import time
 from pynput import keyboard, mouse
 from sqlalchemy import create_engine
-from PySide2.QtCore import QThread, Signal
+from PySide6.QtCore import QThread, Signal
 
 from logger import logger, slogger
 from data_alchemy.models import WorkInfo
