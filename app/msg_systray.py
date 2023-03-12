@@ -1,11 +1,14 @@
 import sys
-from PySide6.QtGui import QIcon, QAction
-from PySide6.QtWidgets import QSystemTrayIcon, QMenu
+
+from PySide6.QtGui import QAction, QIcon
+from PySide6.QtWidgets import QMenu, QSystemTrayIcon
+
 
 class TrayIcon(QSystemTrayIcon):
     """
     系统托盘图标定义
     """
+
     def __init__(self, parent=None):
         super(TrayIcon, self).__init__(parent)
         self.showMenu()
@@ -17,26 +20,26 @@ class TrayIcon(QSystemTrayIcon):
         """
         self.menuMain = QMenu()
         self.subMenu = QMenu()
-        self.showAction = QAction("测试休息提醒消息",
-                                  self,
-                                  triggered=self.showYouNeedRest)
+        self.showAction = QAction("测试休息提醒消息", self, triggered=self.showYouNeedRest)
         self.quitAction = QAction("退出", self, triggered=self.quit)
 
         self.subMenu.addAction(self.showAction)
-        self.menuMain.addMenu(self.subMenu, )
+        self.menuMain.addMenu(
+            self.subMenu,
+        )
 
         self.menuMain.addAction(self.quitAction)
         self.subMenu.setTitle("测试菜单")
         self.setContextMenu(self.menuMain)
 
     def initConnect(self):
-        #把鼠标点击图标的信号和槽连接
+        # 把鼠标点击图标的信号和槽连接
         self.activated.connect(self.iconClicked)
 
-        #把鼠标点击弹出消息的信号和槽连接
+        # 把鼠标点击弹出消息的信号和槽连接
         self.messageClicked.connect(self.msgClickEvent)
 
-        #设置图标
+        # 设置图标
         self.setIcon(QIcon("harry_potter.ico"))
         self.icon = self.MessageIcon(QSystemTrayIcon.MessageIcon.NoIcon)
 
@@ -61,22 +64,10 @@ class TrayIcon(QSystemTrayIcon):
 
     def showYouNeedRest(self, msg="主动点击测试", level=0):
         dict_msg = {
-            0: {
-                "desc": "消息",
-                "value": QSystemTrayIcon.NoIcon
-            },
-            1: {
-                "desc": "提示",
-                "value": QSystemTrayIcon.Information
-            },
-            2: {
-                "desc": "提醒",
-                "value": QSystemTrayIcon.Warning
-            },
-            3: {
-                "desc": "警告",
-                "value": QSystemTrayIcon.Critical
-            },
+            0: {"desc": "消息", "value": QSystemTrayIcon.NoIcon},
+            1: {"desc": "提示", "value": QSystemTrayIcon.Information},
+            2: {"desc": "提醒", "value": QSystemTrayIcon.Warning},
+            3: {"desc": "警告", "value": QSystemTrayIcon.Critical},
         }
         vlevel = dict_msg[level]["value"]
         txt = dict_msg[level]["desc"]
@@ -85,5 +76,5 @@ class TrayIcon(QSystemTrayIcon):
     def quit(self):
         # TODO 完整的退出 不过注释掉几行也能退出,蛮奇怪,先这么吧.
         self.setVisible(False)
-        self.parent().exit()    # qApp.quit()
+        self.parent().exit()  # qApp.quit()
         sys.exit()

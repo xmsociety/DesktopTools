@@ -1,24 +1,20 @@
 import argparse
 
 parser = argparse.ArgumentParser()
-parser.add_argument("--debug",
-                    type=int,
-                    default=0,
-                    choices=[0, 1],
-                    help="debug? 0/1")
-parser.add_argument("--localtime",
-                    default=True,
-                    type=bool,
-                    choices=[True, False],
-                    help="use localtime? True/False")
-parser.add_argument("--threshold",
-                    type=float,
-                    default=30,
-                    help="rest threshold? n /min")
-parser.add_argument("--work_buffer_len",
-                    type=int,
-                    default=60,
-                    help="work T rest buffer lenth. n /s")
+parser.add_argument("--debug", type=int, default=0, choices=[0, 1], help="debug? 0/1")
+parser.add_argument(
+    "--localtime",
+    default=True,
+    type=bool,
+    choices=[True, False],
+    help="use localtime? True/False",
+)
+parser.add_argument(
+    "--threshold", type=float, default=30, help="rest threshold? n /min"
+)
+parser.add_argument(
+    "--work_buffer_len", type=int, default=60, help="work T rest buffer lenth. n /s"
+)
 
 args = parser.parse_args()
 

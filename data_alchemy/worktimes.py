@@ -1,6 +1,7 @@
-from tools import datetime2str, today, time_now
 from sqlalchemy.exc import IntegrityError
-from data_alchemy.models import WorkInfo, Session
+
+from data_alchemy.models import Session, WorkInfo
+from tools import datetime2str, time_now, today
 
 
 def dbmutithread(func):
@@ -27,9 +28,11 @@ def dbmutithread(func):
 
 @dbmutithread
 def write_work_info(session, _type: int, continued: int) -> bool:
-    if not session.query(WorkInfo).filter(WorkInfo.create_time == time_now(),
-                                          WorkInfo.type == _type).first():
-
+    if (
+        not session.query(WorkInfo)
+        .filter(WorkInfo.create_time == time_now(), WorkInfo.type == _type)
+        .first()
+    ):
         info = WorkInfo(type=_type, continued=continued)
         session.add(info)
     return bool
@@ -37,6 +40,9 @@ def write_work_info(session, _type: int, continued: int) -> bool:
 
 @dbmutithread
 def get_last_work_info(session) -> WorkInfo:
-    item = session.query(WorkInfo).order_by(desc(WorkInfo.create_time)).filter(
-        WorkInfo.create_time.like(date + '%'), WorkInfo.type > 0)
+    item = (
+        session.query(WorkInfo)
+        .order_by(desc(WorkInfo.create_time))
+        .filter(WorkInfo.create_time.like(date + "%"), WorkInfo.type > 0)
+    )
     return item

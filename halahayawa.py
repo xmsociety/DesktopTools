@@ -11,32 +11,60 @@ Last edited: 22 2 2021
 """
 import sys
 import time
+
 # from PyQt5.QtWidgets import QApplication, QWidget, QDesktopWidget
 # from PyQt5.QtGui import QIcon, QFont
-from PySide6.QtCore import QTimer
-from PySide6.QtWidgets import QApplication, QWidget, QVBoxLayout, QHBoxLayout, QLabel, QMessageBox, QPushButton
-from PySide6.QtGui import QIcon, QFont, QGuiApplication
+from PySide6.QtCore import Qt, QTimer
+from PySide6.QtGui import QFont, QIcon
+from PySide6.QtWidgets import (
+    QApplication,
+    QHBoxLayout,
+    QLabel,
+    QMessageBox,
+    QPushButton,
+    QVBoxLayout,
+    QWidget,
+)
 
-from tools import time_now, lock_work_station, lenth_time
-from monitor import ThreadSignal, SignalKeyboard, SignalMouse, WorkDict, AlertDict
 from app import input_counter, msg_systray
-from logger import slogger
-from args import KEYBOARD, MOUSE, KEYBOARD_DeviceNo, MOUSE_DeviceNo, args
-from args import Alert_REST_MSG, Alert_REST_MUST_MSG, Alert_REST_KEEP_MSG, NUM_REST_KEEP_Alert, Alert_LockWorkStation_MSG
+from args import (
+    KEYBOARD,
+    MOUSE,
+    Alert_LockWorkStation_MSG,
+    Alert_REST_KEEP_MSG,
+    Alert_REST_MSG,
+    Alert_REST_MUST_MSG,
+    KEYBOARD_DeviceNo,
+    MOUSE_DeviceNo,
+    NUM_REST_KEEP_Alert,
+    args,
+)
 from data_alchemy.models import WorkInfo
+from feather_hotkey.win_searchbar import WinSearchBar
+from logger import slogger
+from monitor import (
+    AlertDict,
+    SignalHotKey,
+    SignalKeyboard,
+    SignalMouse,
+    ThreadSignal,
+    WorkDict,
+)
+from tools import lenth_time, lock_work_station, time_now
 
 
-class Main(QWidget):
-    def __init__(self, screen=False):
-        super().__init__()
+class WinHowLongHadYouWork(QWidget):
+    def __init__(self, screen=False, app=None):
+        super().__init__(None)
 
         self.screen = screen
         self.work_dict = WorkDict()
         self.initUI()
         self.initTimer()
         self.initMonitor()
+        self.searchbar = WinSearchBar(app)
 
-    def iamworking(self, by: str = ''):
+    def iamworking(self, by: str = ""):
         self.work_dict.last_time = time.time()
         if KEYBOARD == by:
             self.work_dict.fill_work_by(KEYBOARD_DeviceNo)
@@ -45,12 +73,23 @@ class Main(QWidget):
         else:
             slogger.error(f"working can't by {by}")
 
+    def keyPressEvent(self, event):
+        if event.key() == Qt.Key_Escape:
+            self.hide()
+        else:
+            super().keyPressEvent(event)
+
+    def open_search_bar(self):
+        self.searchbar.show()
+
     def initMonitor(self):
         thread_kbd = SignalKeyboard()
         thread_mouse = SignalMouse()
+        thread_hotkey = SignalHotKey()
 
         thread_kbd._signal.connect(lambda: self.iamworking(KEYBOARD))
         thread_mouse._signal.connect(lambda: self.iamworking(MOUSE))
+        thread_hotkey._signal.connect(self.open_search_bar)
 
         thread_kbd.listen()
         # MacOS 怕不是个傻子... 以下sleep修复了`AttributeError: CFMachPortCreateRunLoopSource`
@@ -58,12 +97,13 @@ class Main(QWidget):
         time.sleep(0.5)
         thread_mouse.listen()
 
+        time.sleep(0.5)  # 此处继续sleep防止mac下出错 - 未验证
+        thread_hotkey.listen()
+
     def show_rest_msg(self):
         # 判断条件&显示提醒
-        line = self.work_dict.status_continued.get(
-            WorkInfo.type_map_reverse["工作"], 0)
-        slogger.debug(
-            f"check rest alert: line: {line}, threshold: {args.threshold}")
+        line = self.work_dict.status_continued.get(WorkInfo.type_map_reverse["工作"], 0)
+        slogger.debug(f"check rest alert: line: {line}, threshold: {args.threshold}")
         if line >= args.threshold * 60 and line <= args.threshold * 60 * 1.5:
             AlertDict.alert_rest = True
             self.tray.showYouNeedRest(Alert_REST_MSG, 2)
@@ -81,8 +121,9 @@ class Main(QWidget):
                 AlertDict.keep_num = NUM_REST_KEEP_Alert
             slogger.info("alert show: rest keep <")
         # TODO 增加锁屏功能 elif line >= 1 * 60:
-            # self.tray.showYouNeedRest(Alert_LockWorkStation_MSG, 1)
-            # lock_work_station()
+        # self.tray.showYouNeedRest(Alert_LockWorkStation_MSG, 1)
+        # lock_work_station()
+
     def initTimer(self):
         # 定时器
         self.dictLabels["workAll"].setText(f"已经持续工作: 0s\n本次总工作: 0s")
@@ -91,8 +132,8 @@ class Main(QWidget):
         self.timerRest = QTimer()
         self.timer.timeout.connect(self.timeWorking)
         self.timerRest.timeout.connect(self.show_rest_msg)
-        self.timer.start(1 * 1000)    # 1s
-        self.timerRest.start(10 * 1000)    # 10s
+        self.timer.start(1 * 1000)  # 1s
+        self.timerRest.start(10 * 1000)  # 10s
 
     def timeWorking(self):
         self.work_dict.summarize()
@@ -100,9 +141,11 @@ class Main(QWidget):
         self.dictLabels["vtimeNow"].setText(time_now())
 
         work_tm = self.work_dict.status_continued.get(
-            WorkInfo.type_map_reverse["工作"], 0)
+            WorkInfo.type_map_reverse["工作"], 0
+        )
         rest_tm = self.work_dict.status_continued.get(
-            WorkInfo.type_map_reverse["小憩"], 0)
+            WorkInfo.type_map_reverse["小憩"], 0
+        )
         if work_tm:
             self.dictLabels["workAll"].setText(
                 f"已经持续工作: {lenth_time(work_tm)}\n本次总工作: {lenth_time(self.work_dict.work_all)}"
@@ -113,12 +156,11 @@ class Main(QWidget):
             )
 
     def initUI(self):
-
         # self.tooltip()
         # self.setGeometry(300, 300, 300, 220)
         self.center()
-        self.setWindowTitle('Pendulum')
-        self.setWindowIcon(QIcon('harry_potter.ico'))
+        self.setWindowTitle("Pendulum")
+        self.setWindowIcon(QIcon("harry_potter.ico"))
 
         self.vbox, self.hbox, self.hbox2, self.hbox3 = self.initBoxLayout()
         self.initMainWidgets()
@@ -167,10 +209,9 @@ class Main(QWidget):
 
     def click_2(self, button):
         button.setEnabled(False)
-        self.thread_2 = ThreadSignal()    # 创建线程
-        self.thread_2._signal.connect(
-            lambda: self.enableButton(button))    # 借用lambda实现带参
-        self.thread_2.start()    # 开始线程
+        self.thread_2 = ThreadSignal()  # 创建线程
+        self.thread_2._signal.connect(lambda: self.enableButton(button))  # 借用lambda实现带参
+        self.thread_2.start()  # 开始线程
 
     def enableButton(self, button):
         button.setEnabled(True)
@@ -178,12 +219,13 @@ class Main(QWidget):
     def tooltip(self):
         """提示框  不过不好使唤"""
         from PyQt5.QtWidgets import QPushButton, QToolTip
-        QToolTip.setFont(QFont('SansSerif', 10))
 
-        self.setToolTip('This is a <b>QWidget</b> widget')
+        QToolTip.setFont(QFont("SansSerif", 10))
 
-        btn = QPushButton('Button', self)
-        btn.setToolTip('This is a <b>QPushButton</b> widget')
+        self.setToolTip("This is a <b>QWidget</b> widget")
+
+        btn = QPushButton("Button", self)
+        btn.setToolTip("This is a <b>QPushButton</b> widget")
         btn.resize(btn.sizeHint())
         # btn.move(50, 50)
 
@@ -195,10 +237,15 @@ class Main(QWidget):
     def closeEvent(self, event):
         """退出确认"""
         # TODO 测试期嫌累
+        self.searchbar.close()
         return
-        reply = QMessageBox.question(self, 'Message', "Are you sure to quit?",
-                                     QMessageBox.Yes | QMessageBox.No,
-                                     QMessageBox.Yes)
+        reply = QMessageBox.question(
+            self,
+            "Message",
+            "Are you sure to quit?",
+            QMessageBox.Yes | QMessageBox.No,
+            QMessageBox.Yes,
+        )
 
         if reply == QMessageBox.Yes:
             event.accept()
@@ -207,9 +254,9 @@ class Main(QWidget):
 
     def center(self):
         """
-            居中
-            PyQt5 没消息
-            PySide6 提示DeprecationWarning: QDesktopWidget.availableGeometry(int screen) const is deprecated
+        居中
+        PyQt5 没消息
+        PySide6 提示DeprecationWarning: QDesktopWidget.availableGeometry(int screen) const is deprecated
         """
         # region Qt5
         # from PySide6.QtWidgets import QDesktopWidget
@@ -217,18 +264,18 @@ class Main(QWidget):
         # cp = QDesktopWidget().availableGeometry().center()
         # qr.moveCenter(cp)
         # self.move(qr.topLeft())
-        #endregion
+        # endregion
 
         size = self.geometry()
         screen = self.screen
-        self.move((screen.width() - size.width()) / 2,
-                  (screen.height() - size.height()) / 2)
+        self.move(
+            (screen.width() - size.width()) / 2, (screen.height() - size.height()) / 2
+        )
         # 此方法不警告了,不过多屏居中会..居中在所有屏幕总和的中间
 
 
-if __name__ == '__main__':
-
+if __name__ == "__main__":
     app = QApplication(sys.argv)
     screen = app.primaryScreen().geometry()
-    ex = Main(screen)
+    ex = WinHowLongHadYouWork(screen, app=app)
     sys.exit(app.exec())

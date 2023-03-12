@@ -1,7 +1,9 @@
 import sys
+
 from loguru import logger
 
 from args import args
+
 if not args.debug:
     logger.remove(handler_id=None)
 
@@ -12,20 +14,24 @@ if not args.debug:
 #            compression="zip")
 recoder_fmt = "{time:HH:mm:ss.SSS} | {level} - {message}"
 # logger.add(sys.stdout, level="DEBUG")
-logger.add('./activity_logs/activity_{time:YYYY-MM-DD}.log',
-           format=recoder_fmt,
-           level="INFO",
-           rotation='00:00',
-           encoding='utf-8',
-           compression="zip")
+logger.add(
+    "./activity_logs/activity_{time:YYYY-MM-DD}.log",
+    format=recoder_fmt,
+    level="INFO",
+    rotation="00:00",
+    encoding="utf-8",
+    compression="zip",
+)
 
-slog_prefix = 'Hlhyw - '
-logger.add("./activity_logs/server_{time:YYYY-MM-DD}.log",
-           level="INFO",
-           rotation='00:00',
-           encoding='utf-8',
-           filter=lambda x: slog_prefix in x['message'],
-           compression="zip")
+slog_prefix = "Hlhyw - "
+logger.add(
+    "./activity_logs/server_{time:YYYY-MM-DD}.log",
+    level="INFO",
+    rotation="00:00",
+    encoding="utf-8",
+    filter=lambda x: slog_prefix in x["message"],
+    compression="zip",
+)
 
 
 class CustomLog:

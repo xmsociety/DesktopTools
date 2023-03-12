@@ -1,11 +1,20 @@
 import operator
 
-from PySide6.QtCore import QThread, Signal, Qt, QAbstractTableModel, SIGNAL
-from PySide6.QtWidgets import QDialog, QPushButton, QMessageBox, QHBoxLayout, QVBoxLayout, QWidget, QTableView
-# from PySide2.QtCharts import QtCharts # PySide6 不能这么引入
+from PySide6.QtCore import SIGNAL, QAbstractTableModel, Qt, QThread, Signal
+from PySide6.QtWidgets import (
+    QDialog,
+    QHBoxLayout,
+    QMessageBox,
+    QPushButton,
+    QTableView,
+    QVBoxLayout,
+    QWidget,
+)
 
-from logger import logger
 from data_alchemy import inputs
+from logger import logger
+
+# from PySide2.QtCharts import QtCharts # PySide6 不能这么引入
 
 
 class MyTableModel(QAbstractTableModel):
@@ -42,7 +51,12 @@ class MyTableModel(QAbstractTableModel):
 
 
 class CounterDialog(QDialog):
-    """对QDialog类重写, 实现一些功能"""
+    """
+    显示按键统计表格
+    对QDialog类重写
+    实现统计键盘按键统计的功能
+    """
+
     def __init__(self, screen=None):
         super().__init__()
         self.chat = None
@@ -61,7 +75,7 @@ class CounterDialog(QDialog):
             ...
         ]
         """
-        table_model = MyTableModel(self, data_list, ["name", "count"])
+        table_model = MyTableModel(self, data_list, ["name", "count", "update_time"])
         table_view = QTableView()
         table_view.setModel(table_model)
         # set column width to fit contents (set font first!)
@@ -87,7 +101,7 @@ class CounterDialog(QDialog):
         # self.chat = chat
         data = []
         for item in inputs.iter_count_on():
-            data.append((item.name, item.count))
+            data.append((item.name, item.count, str(item.update_time)))
         self.initTable(data)
         return data
 

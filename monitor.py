@@ -1,13 +1,21 @@
 import time
-from pynput import keyboard, mouse
-from sqlalchemy import create_engine
-from PySide6.QtCore import QThread, Signal
 
-from logger import logger, slogger
-from data_alchemy.models import WorkInfo
+from pynput import keyboard, mouse
+from PySide6.QtCore import QThread, Signal
+from sqlalchemy import create_engine
+
+from args import (
+    ERROR_CATCH_NAME,
+    KEYBOARD_DeviceNo,
+    MOUSE_DeviceNo,
+    NUM_REST_KEEP_Alert,
+    TICKER_DeviceNo,
+    args,
+)
 from data_alchemy.inputs import add_count_keymouse
+from data_alchemy.models import WorkInfo
 from data_alchemy.worktimes import write_work_info
-from args import KEYBOARD_DeviceNo, MOUSE_DeviceNo, TICKER_DeviceNo, args, ERROR_CATCH_NAME, NUM_REST_KEEP_Alert
+from logger import logger, slogger
 
 
 class AlertDict:
@@ -52,12 +60,11 @@ class WorkDict:
 
     def count_now_status(self) -> (int, bool):
         from collections import Counter
+
         dict_by = Counter(self.work_by)
-        num_work = dict_by.get(KEYBOARD_DeviceNo, 0) + dict_by.get(
-            MOUSE_DeviceNo, 0)
+        num_work = dict_by.get(KEYBOARD_DeviceNo, 0) + dict_by.get(MOUSE_DeviceNo, 0)
         num_rest = dict_by.get(TICKER_DeviceNo, 0)
-        slogger.debug(
-            f"work status num| num_work: {num_work}, num_rest: {num_rest}")
+        slogger.debug(f"work status num| num_work: {num_work}, num_rest: {num_rest}")
         continued = 0
         if num_work:
             self.now_status[-1] = WorkInfo.type_map_reverse["工作"]
@@ -91,7 +98,7 @@ class ThreadSimple(QThread):
         values = [1, 2, 3, 4, 5]
         for i in values:
             print(i)
-            time.sleep(0.5)    # 休眠
+            time.sleep(0.5)  # 休眠
 
 
 class ThreadSignal(QThread):
@@ -117,15 +124,17 @@ class SignalKeyboard(QThread):
         super().__init__()
 
     def listen(self):
-        listener = keyboard.Listener(on_press=self.on_press,
-                                     on_release=self.on_release)
+        listener = keyboard.Listener(on_press=self.on_press, on_release=self.on_release)
         listener.start()
 
     def log_event(self, name, key, save=0):
         try:
             char_name = key.__dict__.get("char")
+            vk = key.__dict__.get("vk")
             event_name = name
-            if char_name:
+            if vk:
+                char_name = f"vk_{key.vk}"
+            elif char_name:
                 char_name = key.char
             elif key.__dict__.get("_name_"):
                 char_name = key._name_
@@ -138,8 +147,7 @@ class SignalKeyboard(QThread):
                 save = add_count_keymouse(char_name, KEYBOARD_DeviceNo)
             logger.info(f"{char_name}&{event_name}&save_{save}")
         except AttributeError as err:
-            logger.error(
-                f"keyboard event catch error: {err} => {key.__dict__}")
+            logger.error(f"keyboard event catch error: {err} => {key.__dict__}")
 
     def on_press(self, key):
         self.log_event("pressed", key, save=1)
@@ -157,9 +165,9 @@ class SignalMouse(QThread):
         super().__init__()
 
     def listen(self):
-        listener = mouse.Listener(on_move=self.on_move,
-                                  on_click=self.on_click,
-                                  on_scroll=self.on_scroll)
+        listener = mouse.Listener(
+            on_move=self.on_move, on_click=self.on_click, on_scroll=self.on_scroll
+        )
         listener.start()
 
     def on_move(self, x, y):
@@ -167,7 +175,7 @@ class SignalMouse(QThread):
         self._signal.emit()
 
     def on_click(self, x, y, button, pressed):
-        action = 'Pressed' if pressed else 'Released'
+        action = "Pressed" if pressed else "Released"
         sign = 0
         if pressed:
             sign = add_count_keymouse(button._name_, MOUSE_DeviceNo)
@@ -178,4 +186,23 @@ class SignalMouse(QThread):
         direction = f"({dx},{dy})"
         sign = add_count_keymouse(f"scroll_{direction}", MOUSE_DeviceNo)
         logger.info(f"scroll&({dx},{dy})&({x},{y})&save_{sign}")
+        self._signal.emit()
+
+
+class SignalHotKey(QThread):
+    _signal = Signal()
+
+    def __init__(self):
+        super().__init__()
+
+    def listen(self):
+        hotkey = keyboard.GlobalHotKeys(
+            {
+                "<ctrl>+<alt>+c": self.on_activate,
+                "<ctrl>+<alt>+g": lambda: print("Goodbye"),
+            }
+        )
+        hotkey.start()
+
+    def on_activate(self):
         self._signal.emit()
