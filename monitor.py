@@ -185,22 +185,3 @@ class SignalMouse(QThread):
         sign = add_count_keymouse(f"scroll_{direction}", MOUSE_DeviceNo)
         logger.info(f"scroll&({dx},{dy})&({x},{y})&save_{sign}")
         self._signal.emit()
-
-
-class SignalHotKey(QThread):
-    _signal = Signal()
-
-    def __init__(self):
-        super().__init__()
-
-    def listen(self):
-        hotkey = keyboard.GlobalHotKeys(
-            {
-                "<ctrl>+<alt>+c": self.on_activate,
-                "<ctrl>+<alt>+g": lambda: print("Goodbye"),
-            }
-        )
-        hotkey.start()
-
-    def on_activate(self):
-        self._signal.emit()

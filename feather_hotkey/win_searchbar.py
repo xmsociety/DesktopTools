@@ -47,6 +47,7 @@ class WinSearchBar(QWidget):
         cmd = self.ui.lineEdit.text()
         target_symbol = cmd.split(ClipFuncs.SplitSign)[-1]
         self.clip_funcs.replace_spaces(target_symbol)
+        self.hide()
 
     def keyPressEvent(self, event):
         if event.key() == Qt.Key_Escape:
@@ -55,5 +56,4 @@ class WinSearchBar(QWidget):
             super().keyPressEvent(event)
 
     def closeEvent(self, _):
-        print("close~~~~")
         self.close()
