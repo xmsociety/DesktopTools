@@ -83,6 +83,7 @@ class KeyMouse(Base):
     id = Column(Integer, primary_key=True, autoincrement=True)
     # 指定name映射到name字段; name字段为字符串类形
     name = Column(CHAR(1), nullable=False)
+    vk = Column(CHAR(1), nullable=False)
     create_time = Column(
         DateTime(timezone=8), server_default=time_now, comment="创建时间 datetime"
     )
