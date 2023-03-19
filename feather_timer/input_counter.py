@@ -11,7 +11,7 @@ from PySide6.QtWidgets import (
     # QWidget,
 )
 
-from data_alchemy import inputs
+from .data_alchemy import inputs
 from logger import logger
 
 # from PySide2.QtCharts import QtCharts # PySide6 不能这么引入

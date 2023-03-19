@@ -12,10 +12,10 @@ from args import (
     TICKER_DeviceNo,
     args,
 )
-from data_alchemy.inputs import add_count_keymouse
-from data_alchemy.models import WorkInfo
-from data_alchemy.worktimes import write_work_info
 from logger import logger, slogger
+from .data_alchemy.inputs import add_count_keymouse
+from .data_alchemy.models import WorkInfo
+from .data_alchemy.worktimes import write_work_info
 
 
 class AlertDict:

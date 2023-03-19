@@ -1,6 +1,6 @@
 from sqlalchemy import desc
 
-from data_alchemy.models import KeyMouse, Session
+from .models import KeyMouse, Session
 from tools import today
 
 

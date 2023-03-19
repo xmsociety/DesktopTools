@@ -40,9 +40,9 @@ from args import (
     NUM_REST_KEEP_Alert,
     args,
 )
-from data_alchemy.models import WorkInfo
 from logger import slogger
-from monitor import (
+from .data_alchemy.models import WorkInfo
+from .monitor import (
     AlertDict,
     SignalKeyboard,
     SignalMouse,
