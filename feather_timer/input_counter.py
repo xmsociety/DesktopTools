@@ -1,17 +1,17 @@
 import operator
 
-from PySide6.QtCore import SIGNAL, QAbstractTableModel, Qt, QThread, Signal
+from PySide6.QtCore import SIGNAL, QAbstractTableModel, Qt
 from PySide6.QtWidgets import (
     QDialog,
     QHBoxLayout,
-    QMessageBox,
+    # QMessageBox,
     QPushButton,
     QTableView,
     QVBoxLayout,
-    QWidget,
+    # QWidget,
 )
 
-from data_alchemy import inputs
+from .data_alchemy import inputs
 from logger import logger
 
 # from PySide2.QtCharts import QtCharts # PySide6 不能这么引入
@@ -75,7 +75,9 @@ class CounterDialog(QDialog):
             ...
         ]
         """
-        table_model = MyTableModel(self, data_list, ["name", "count", "update_time"])
+        table_model = MyTableModel(
+            self, data_list, ["name", "count", "vk", "update_time"]
+        )
         table_view = QTableView()
         table_view.setModel(table_model)
         # set column width to fit contents (set font first!)
@@ -101,7 +103,7 @@ class CounterDialog(QDialog):
         # self.chat = chat
         data = []
         for item in inputs.iter_count_on():
-            data.append((item.name, item.count, str(item.update_time)))
+            data.append((item.name, item.count, item.vk, str(item.update_time)))
         self.initTable(data)
         return data
 

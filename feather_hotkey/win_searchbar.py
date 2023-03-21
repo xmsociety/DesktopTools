@@ -3,6 +3,7 @@ import sys
 from PySide6.QtCore import Qt
 from PySide6.QtWidgets import QCompleter, QWidget
 
+from logger import logger
 from .clip_string import ClipFuncs
 from .ui_searchbar import Ui_SearchBar
 
@@ -39,14 +40,36 @@ class WinSearchBar(QWidget):
         # self.ui.pushButton.clicked.connect(lambda: self.click_2())
         self.ui.pushButton.clicked.connect(self.clip_worker)
         self.clip_funcs = ClipFuncs(clipboard=self.app.clipboard())
-        completer = FuzzyCompleter([i for i in self.clip_funcs.dict_registered.keys()])
+        completer = FuzzyCompleter(
+            [i for i in self.clip_funcs.dict_registered.keys()]
+        )
         completer.setCaseSensitivity(Qt.CaseInsensitive)
         self.ui.lineEdit.setCompleter(completer)
 
+    def unregistered_warning(self, *arg, **kwargs):
+        self.ui.lineEdit.setText("命令错误-没有匹配到处理方法")
+        return False, "命令错误-没有匹配到处理方法"
+
     def clip_worker(self):
         cmd = self.ui.lineEdit.text()
-        target_symbol = cmd.split(ClipFuncs.SplitSign)[-1]
-        self.clip_funcs.replace_spaces(target_symbol)
+        logger.info(f"run cmd is: {cmd}")
+
+        registered_key = cmd
+        ok, err = True, ''
+        if ClipFuncs.SplitSign in cmd:
+            registered_key, target_symbol = cmd.split(ClipFuncs.SplitSign)
+            ok, err = self.clip_funcs.dict_registered.get(
+                registered_key+ClipFuncs.SplitSign, self.unregistered_warning
+            )(
+                target_symbol=target_symbol
+            )
+        else:
+            ok, err = self.clip_funcs.dict_registered.get(
+                registered_key, self.unregistered_warning)()
+        if not ok:
+            self.ui.lineEdit.setText(err)
+        else:
+            self.hide()
 
     def keyPressEvent(self, event):
         if event.key() == Qt.Key_Escape:
@@ -55,5 +78,4 @@ class WinSearchBar(QWidget):
             super().keyPressEvent(event)
 
     def closeEvent(self, _):
-        print("close~~~~")
         self.close()

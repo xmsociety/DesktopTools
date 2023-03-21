@@ -26,11 +26,12 @@ from PySide6.QtWidgets import (
     QWidget,
 )
 
-from app import input_counter, msg_systray
+from . import input_counter
+from app import msg_systray
 from args import (
     KEYBOARD,
     MOUSE,
-    Alert_LockWorkStation_MSG,
+    # Alert_LockWorkStation_MSG,
     Alert_REST_KEEP_MSG,
     Alert_REST_MSG,
     Alert_REST_MUST_MSG,
@@ -39,12 +40,10 @@ from args import (
     NUM_REST_KEEP_Alert,
     args,
 )
-from data_alchemy.models import WorkInfo
-from feather_hotkey.win_searchbar import WinSearchBar
 from logger import slogger
-from monitor import (
+from .data_alchemy.models import WorkInfo
+from .monitor import (
     AlertDict,
-    SignalHotKey,
     SignalKeyboard,
     SignalMouse,
     ThreadSignal,
@@ -54,7 +53,7 @@ from tools import lenth_time, lock_work_station, time_now
 
 
 class WinHowLongHadYouWork(QWidget):
-    def __init__(self, screen=False, app=None):
+    def __init__(self, screen=False):
         super().__init__(None)
 
         self.screen = screen
@@ -62,7 +61,6 @@ class WinHowLongHadYouWork(QWidget):
         self.initUI()
         self.initTimer()
         self.initMonitor()
-        self.searchbar = WinSearchBar(app)
 
     def iamworking(self, by: str = ""):
         self.work_dict.last_time = time.time()
@@ -79,26 +77,18 @@ class WinHowLongHadYouWork(QWidget):
         else:
             super().keyPressEvent(event)
 
-    def open_search_bar(self):
-        self.searchbar.show()
-
     def initMonitor(self):
         thread_kbd = SignalKeyboard()
         thread_mouse = SignalMouse()
-        thread_hotkey = SignalHotKey()
 
         thread_kbd._signal.connect(lambda: self.iamworking(KEYBOARD))
         thread_mouse._signal.connect(lambda: self.iamworking(MOUSE))
-        thread_hotkey._signal.connect(self.open_search_bar)
 
         thread_kbd.listen()
         # MacOS 怕不是个傻子... 以下sleep修复了`AttributeError: CFMachPortCreateRunLoopSource`
         # 也可能我是个😳😳
         time.sleep(0.5)
         thread_mouse.listen()
-
-        time.sleep(0.5)  # 此处继续sleep防止mac下出错 - 未验证
-        thread_hotkey.listen()
 
     def show_rest_msg(self):
         # 判断条件&显示提醒
@@ -228,29 +218,6 @@ class WinHowLongHadYouWork(QWidget):
         btn.setToolTip("This is a <b>QPushButton</b> widget")
         btn.resize(btn.sizeHint())
         # btn.move(50, 50)
-
-    def exit(self):
-        # 退出程序
-        qApp = QApplication.instance()
-        qApp.quit()
-
-    def closeEvent(self, event):
-        """退出确认"""
-        # TODO 测试期嫌累
-        self.searchbar.close()
-        return
-        reply = QMessageBox.question(
-            self,
-            "Message",
-            "Are you sure to quit?",
-            QMessageBox.Yes | QMessageBox.No,
-            QMessageBox.Yes,
-        )
-
-        if reply == QMessageBox.Yes:
-            event.accept()
-        else:
-            event.ignore()
 
     def center(self):
         """

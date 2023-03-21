@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Form</string>
+   <string>小命令工具</string>
   </property>
   <layout class="QHBoxLayout" name="horizontalLayout_2">
    <item>
@@ -28,6 +28,9 @@
         <font>
          <family>Cascadia Code</family>
         </font>
+       </property>
+       <property name="placeholderText">
+        <string>此处键入文字命令</string>
        </property>
       </widget>
      </item>

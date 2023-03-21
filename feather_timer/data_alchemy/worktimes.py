@@ -1,7 +1,7 @@
 from sqlalchemy.exc import IntegrityError
 
-from data_alchemy.models import Session, WorkInfo
 from tools import datetime2str, time_now, today
+from .models import Session, WorkInfo
 
 
 def dbmutithread(func):

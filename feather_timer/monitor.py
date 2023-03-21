@@ -12,10 +12,10 @@ from args import (
     TICKER_DeviceNo,
     args,
 )
-from data_alchemy.inputs import add_count_keymouse
-from data_alchemy.models import WorkInfo
-from data_alchemy.worktimes import write_work_info
 from logger import logger, slogger
+from .data_alchemy.inputs import add_count_keymouse
+from .data_alchemy.models import WorkInfo
+from .data_alchemy.worktimes import write_work_info
 
 
 class AlertDict:
@@ -130,11 +130,9 @@ class SignalKeyboard(QThread):
     def log_event(self, name, key, save=0):
         try:
             char_name = key.__dict__.get("char")
-            vk = key.__dict__.get("vk")
+            vk = key.__dict__.get("vk", '')
             event_name = name
-            if vk:
-                char_name = f"vk_{key.vk}"
-            elif char_name:
+            if char_name:
                 char_name = key.char
             elif key.__dict__.get("_name_"):
                 char_name = key._name_
@@ -144,7 +142,7 @@ class SignalKeyboard(QThread):
                     f"keyboard event no catch warning: {name} => {key.__dict__}"
                 )
             if save:
-                save = add_count_keymouse(char_name, KEYBOARD_DeviceNo)
+                save = add_count_keymouse(char_name, KEYBOARD_DeviceNo, vk=vk)
             logger.info(f"{char_name}&{event_name}&save_{save}")
         except AttributeError as err:
             logger.error(f"keyboard event catch error: {err} => {key.__dict__}")
@@ -186,23 +184,4 @@ class SignalMouse(QThread):
         direction = f"({dx},{dy})"
         sign = add_count_keymouse(f"scroll_{direction}", MOUSE_DeviceNo)
         logger.info(f"scroll&({dx},{dy})&({x},{y})&save_{sign}")
-        self._signal.emit()
-
-
-class SignalHotKey(QThread):
-    _signal = Signal()
-
-    def __init__(self):
-        super().__init__()
-
-    def listen(self):
-        hotkey = keyboard.GlobalHotKeys(
-            {
-                "<ctrl>+<alt>+c": self.on_activate,
-                "<ctrl>+<alt>+g": lambda: print("Goodbye"),
-            }
-        )
-        hotkey.start()
-
-    def on_activate(self):
         self._signal.emit()

@@ -15,6 +15,6 @@ format:
 	flake8 --ignore W503,E203,E501,E731,F403,F401 . --exclude feather_hotkey/searchbar.ui,venv/
 
 run: # 运行
-	python halahayawa.py
+	python main.py
 ui: # 编译.ui 到 .py
 	cd feather_hotkey && pyside6-uic searchbar.ui -o ui_searchbar.py
