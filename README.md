@@ -1,5 +1,5 @@
-# Halahayawa
-How long have you worked.
+# DesktopTools
+桌面端小工具
 
 ## 进度和计划
 进度和计划: 可在查看[此处](https://github.com/IanVzs/Halahayawa/blob/dev/plan.md)
@@ -7,13 +7,13 @@ How long have you worked.
 ## 使用
 ### 源码
 ```bash
-git clone git@github.com:IanVzs/Halahayawa.git
-cd Halahayawa/
+git clone git@github.com:IanVzs/Halahayawa.git DesktopTools
+cd DesktopTools/
 mkdir env
 python3 -m venv ./env
 source ~/env/bin/activate
 pip install -r requirements.txt -i https://pypi.tuna.tsinghua.edu.cn/simple
-python halahayawa.py
+python main.py
 ```
 
 可根据实际情况进行适当调整
@@ -33,21 +33,35 @@ pyinstaller --specpath=executable_files --distpath=executable_files --hidden-imp
 pyinstaller --specpath=executable_files --distpath=executable_files --hidden-import=pynput.keyboard._xorg --hidden-import=pynput.mouse._xorg --hidden-import=sqlalchemy.sql.default_comparator -w -D --clean halahayawa.py
 ```
 
-## 原理
+
+# 功能介绍
+## 工作时长统计
+- 工作时长
+- 按键记录
+- 疲惫提醒-强制锁屏😄
+
+## 粘贴板操作
+- 时间转换
+- 表格数据格式化
+- dict json 格式化
+- TODO
+
+
+## 工作时长统计原理
 检测鼠标以及键盘移动/输入,判断正在工作中.
 macOS因隐私权限问题,需要额外设置,具体详参[此处](https://pynput.readthedocs.io/en/latest/limitations.html#macos)
 
-## 实现
-### 编程语言
+### 实现
+#### 编程语言
 Python(不会卡的太死lol)
 
-### 所用库/包
+#### 所用库/包
 - PyQt5: 实现简单界面(不想用其它包,卡的比较死^_^.....弃用,因为其授权协议问题,虽然我的是MIT不要紧,但是用了它我的协议就被升级...虽然PySide6也会升级本项目授权,但比PyQt5要好.)
 - PySide6: 实现简单界面(不想用其它包,卡的不死^_^, 有MIT的实现方式欢迎改造)
 - pynput: 监控鼠标键盘
 - sqlalchemy: 数据库ORM,手拼字符累了,试试新东西
 - yapf: 代码格式化 
-#### yapf
+##### yapf
 查看工具格式将修改哪些地方 和 应用修改, 配置文件`.style.yapf`
 ```bash
 python3 -m yapf . -d -r
@@ -77,10 +91,10 @@ mat = [
 
 ## 包含信息
 - [x] 当前单次连续工作时长 历史最大/最小
-- [x] 当前单日工作总时长 历史最大/最小
-- [x] 当前单周总工作时长 历史最大/最小
-- [x] 当前单月总工作时长 历史最大/最小
-- [x] 跨度: 天/周/月/年数
+- [ ] 当前单日工作总时长 历史最大/最小
+- [ ] 当前单周总工作时长 历史最大/最小
+- [ ] 当前单月总工作时长 历史最大/最小
+- [ ] 跨度: 天/周/月/年数
 - [x] 展示当前单次连续工作时长
 - [x] 展示单次运行工作总时长
 - [ ] 展示以上其余信息
@@ -93,6 +107,7 @@ mat = [
 ## 提醒
 ### 连续工作N分钟/小时放送提醒
 - [x] 默认半小时(30min), 10s一次提醒. 要终止提醒只能休息最少一分钟.
+- [x] 强制锁屏 哈哈哈
 
 ### 周中连续N天超过N小时提醒
 - [ ] 未实现

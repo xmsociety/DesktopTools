@@ -1,14 +1,14 @@
 from PySide6.QtCore import Qt
 from PySide6.QtGui import QClipboard, QPixmap
 
+import re
+import datetime
 from logger import logger
 
 
 def replace_spaces(s1, s2):
     # s1 is the first string; # s2 is the second string
     # use re module to replace consecutive spaces with s2
-    import re
-
     # create a regular expression pattern that matches one or more spaces
     # pattern = re.compile(r"\s+") # 替换特殊字符和空格
     pattern = re.compile(r" +")
@@ -43,6 +43,23 @@ def data2json(str_data: str) -> str:
     return str_data
 
 
+def extract_numbers(string):
+    pattern = r'\d+'
+    numbers = re.findall(pattern, string)
+    numbers = ''.join(numbers)
+    return numbers
+
+
+def unixtime_to_datetime_str(unixtime_str):
+    unixtime_str = extract_numbers(unixtime_str)
+    if not unixtime_str or not unixtime_str.isdigit():
+        return ""
+    unixtime = int(unixtime_str)
+    dt = datetime.datetime.fromtimestamp(unixtime)
+    dt_str = dt.strftime('%Y-%m-%d %H:%M:%S')
+    return dt_str
+
+
 class ClipFuncs:
     SplitSign: str = ": "
 
@@ -51,7 +68,21 @@ class ClipFuncs:
         self.dict_registered: dict = {
             f"clip-连续空格替换为指定符号{self.SplitSign}": self.replace_spaces,
             "clip-data转为JSON字符串": self.data2json,
+            "clip-unixtime转datetime": self.unixtime_to_datetime_str,
         }
+
+    def get_clipboard_text(self):
+        originalText = self.clipboard.text()
+        if originalText:
+            return originalText
+        return ""
+
+    def unixtime_to_datetime_str(self):
+        content = unixtime_to_datetime_str(self.get_clipboard_text() or 0)
+        if not content:
+            return False, "非unix时间"
+        self.clipboard.setText(content)
+        return True, ""
 
     def data2json(self):
         """
@@ -80,7 +111,9 @@ class ClipFuncs:
         return True, ''
 
 if __name__ == "__main__":
-    rst = replace_spaces(
-        "Hello   world  nihao haha  liuliuliu  niubi \n 1 2 3 4  5", "|"
-    )
-    print(rst)
+    # rst = replace_spaces(
+    #     "Hello   world  nihao haha  liuliuliu  niubi \n 1 2 3 4  5", "|"
+    # )
+    # print(rst)
+    print(extract_numbers("jas123asdkh123"))
+    print(extract_numbers("213"))
