@@ -39,6 +39,7 @@ class WinSearchBar(QWidget):
         self.app = app
         # self.ui.pushButton.clicked.connect(lambda: self.click_2())
         self.ui.pushButton.clicked.connect(self.clip_worker)
+        self.ui.pushButton.setDefault(True)
         self.clip_funcs = ClipFuncs(clipboard=self.app.clipboard())
         completer = FuzzyCompleter(
             [i for i in self.clip_funcs.dict_registered.keys()]
@@ -56,20 +57,24 @@ class WinSearchBar(QWidget):
 
         registered_key = cmd
         ok, err = True, ''
-        if ClipFuncs.SplitSign in cmd:
-            registered_key, target_symbol = cmd.split(ClipFuncs.SplitSign)
-            ok, err = self.clip_funcs.dict_registered.get(
-                registered_key+ClipFuncs.SplitSign, self.unregistered_warning
-            )(
-                target_symbol=target_symbol
-            )
-        else:
-            ok, err = self.clip_funcs.dict_registered.get(
-                registered_key, self.unregistered_warning)()
-        if not ok:
-            self.ui.lineEdit.setText(err)
-        else:
-            self.hide()
+        try:
+            if ClipFuncs.SplitSign in cmd:
+                registered_key, target_symbol = cmd.split(ClipFuncs.SplitSign)
+                ok, err = self.clip_funcs.dict_registered.get(
+                    registered_key+ClipFuncs.SplitSign, self.unregistered_warning
+                )(
+                    target_symbol=target_symbol
+                )
+            else:
+                ok, err = self.clip_funcs.dict_registered.get(
+                    registered_key, self.unregistered_warning)()
+            if not ok:
+                self.ui.lineEdit.setText(err)
+            else:
+                self.hide()
+        except Exception as err:
+            self.ui.lineEdit.setText(str(err))
+            logger.error(f"clip_worker Error: {err}")
 
     def keyPressEvent(self, event):
         if event.key() == Qt.Key_Escape:
