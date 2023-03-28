@@ -53,11 +53,12 @@ from tools import lenth_time, lock_work_station, time_now
 
 
 class WinHowLongHadYouWork(QWidget):
-    def __init__(self, screen=False):
+    def __init__(self, screen=False, tray=None):
         super().__init__(None)
 
         self.screen = screen
         self.work_dict = WorkDict()
+        self.tray = tray
         self.initUI()
         self.initTimer()
         self.initMonitor()
@@ -166,9 +167,6 @@ class WinHowLongHadYouWork(QWidget):
         self.vbox.addLayout(self.hbox2)
         self.vbox.addLayout(self.hbox3)
         self.setLayout(self.vbox)
-
-        self.tray = msg_systray.TrayIcon(self)
-        self.tray.show()
 
         self.show()
 

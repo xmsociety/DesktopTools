@@ -22,6 +22,7 @@ from PySide6.QtWidgets import (
 
 from logger import logger
 
+from app.msg_systray import TrayIcon
 from feather_hotkey.win_searchbar import WinSearchBar
 from feather_timer.halahayawa import WinHowLongHadYouWork
 
@@ -37,12 +38,14 @@ class WinMain(QWidget):
         super().__init__(None)
 
         self.screen = screen
+        self.tray = TrayIcon(self)
         self.win_searchbar = WinSearchBar(app)
-        self.win_timer = WinHowLongHadYouWork(screen)
+        self.win_timer = WinHowLongHadYouWork(screen, self.tray)
 
         self.initSearchBar()
 
         self.win_timer.show()
+        self.tray.show()
 
     def initSearchBar(self):
         """
@@ -64,6 +67,7 @@ class WinMain(QWidget):
         """退出确认"""
         # TODO 测试期嫌累
         self.win_searchbar.close()
+        self.win_timer.close()
         return
         reply = QMessageBox.question(
             self,

@@ -76,5 +76,5 @@ class TrayIcon(QSystemTrayIcon):
     def quit(self):
         # TODO 完整的退出 不过注释掉几行也能退出,蛮奇怪,先这么吧.
         self.setVisible(False)
-        self.parent().exit()  # qApp.quit()
+        self.parent().close()  # qApp.quit()
         sys.exit()
