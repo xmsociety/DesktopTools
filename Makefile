@@ -7,12 +7,12 @@ help: # 获取命令行示例
 code_check:
 	isort --check --diff .
 	black --check --diff .
-	flake8 --ignore W503,E203,E501,E731,F403,F401 . --exclude feather_hotkey/searchbar.ui,venv/
+	flake8 --ignore W503,E203,E501,E731,F403,F401 . --exclude feather_hotkey/searchbar.ui,venv/,feather_hotkey/ui_searchbar.py
 
 format:
 	isort .
 	black .
-	flake8 --ignore W503,E203,E501,E731,F403,F401 . --exclude feather_hotkey/searchbar.ui,venv/
+	flake8 --ignore W503,E203,E501,E731,F403,F401 . --exclude feather_hotkey/searchbar.ui,venv/,feather_hotkey/ui_searchbar.py
 
 run: # 运行
 	python main.py

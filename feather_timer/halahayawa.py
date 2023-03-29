@@ -16,40 +16,21 @@ import time
 # from PyQt5.QtGui import QIcon, QFont
 from PySide6.QtCore import Qt, QTimer
 from PySide6.QtGui import QFont, QIcon
-from PySide6.QtWidgets import (
-    QApplication,
-    QHBoxLayout,
-    QLabel,
-    QMessageBox,
-    QPushButton,
-    QVBoxLayout,
-    QWidget,
-)
+from PySide6.QtWidgets import (QApplication, QHBoxLayout, QLabel, QMessageBox,
+                               QPushButton, QVBoxLayout, QWidget)
+
+from app import msg_systray
+from args import MOUSE  # Alert_LockWorkStation_MSG,
+from args import (KEYBOARD, Alert_REST_KEEP_MSG, Alert_REST_MSG,
+                  Alert_REST_MUST_MSG, KEYBOARD_DeviceNo, MOUSE_DeviceNo,
+                  NUM_REST_KEEP_Alert, args)
+from logger import slogger
+from tools import lenth_time, lock_work_station, time_now
 
 from . import input_counter
-from app import msg_systray
-from args import (
-    KEYBOARD,
-    MOUSE,
-    # Alert_LockWorkStation_MSG,
-    Alert_REST_KEEP_MSG,
-    Alert_REST_MSG,
-    Alert_REST_MUST_MSG,
-    KEYBOARD_DeviceNo,
-    MOUSE_DeviceNo,
-    NUM_REST_KEEP_Alert,
-    args,
-)
-from logger import slogger
 from .data_alchemy.models import WorkInfo
-from .monitor import (
-    AlertDict,
-    SignalKeyboard,
-    SignalMouse,
-    ThreadSignal,
-    WorkDict,
-)
-from tools import lenth_time, lock_work_station, time_now
+from .monitor import (AlertDict, SignalKeyboard, SignalMouse, ThreadSignal,
+                      WorkDict)
 
 
 class WinHowLongHadYouWork(QWidget):
@@ -117,8 +98,8 @@ class WinHowLongHadYouWork(QWidget):
 
     def initTimer(self):
         # 定时器
-        self.dictLabels["workAll"].setText(f"已经持续工作: 0s\n本次总工作: 0s")
-        self.dictLabels["restAll"].setText(f"已经休息: 0s\n本次总小憩: 0s")
+        self.dictLabels["workAll"].setText("已经持续工作: 0s\n本次总工作: 0s")
+        self.dictLabels["restAll"].setText("已经休息: 0s\n本次总小憩: 0s")
         self.timer = QTimer()
         self.timerRest = QTimer()
         self.timer.timeout.connect(self.timeWorking)

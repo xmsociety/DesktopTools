@@ -15,14 +15,14 @@ from datetime import datetime
 def json_loads(str_data):
     try:
         return json.loads(str_data)
-    except:
+    except Exception:
         return {}
 
 
 def json_dumps(data, ensure_ascii=False):
     try:
         data = json.dumps(data, ensure_ascii=ensure_ascii)
-    except:
+    except Exception:
         pass
     return data
 
@@ -59,7 +59,7 @@ def count_age(str_date: str = "", dt_date: datetime = None) -> str:
         try:
             str_date = str_date[:10]
             dt_date = datetime.strptime(str_date, "%Y-%m-%d")
-        except:
+        except Exception:
             dt_date = None
     if dt_date:
         now = datetime.now()
@@ -85,7 +85,7 @@ def count_ago(str_date: str = "", dt_date: datetime = None) -> str:
         try:
             str_date = str_date[:10]
             dt_date = datetime.strptime(str_date, "%Y-%m-%d")
-        except:
+        except Exception:
             dt_date = None
     if dt_date:
         now = datetime.now()

@@ -1,6 +1,9 @@
+from datetime import date
+from sqlalchemy import desc
 from sqlalchemy.exc import IntegrityError
 
-from tools import datetime2str, time_now, today
+from tools import time_now
+
 from .models import Session, WorkInfo
 
 
@@ -14,7 +17,7 @@ def dbmutithread(func):
                 return True
             else:
                 return rst
-        except IntegrityError as err:
+        except IntegrityError:
             session.rollback()
             if rst == bool:
                 return False

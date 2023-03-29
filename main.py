@@ -11,22 +11,17 @@ Last edited: 22 2 2021
 """
 import sys
 import time
-# from PySide6.QtGui import QFont, QIcon
 
 from PySide6.QtCore import Qt
-from PySide6.QtWidgets import (
-    QApplication,
-    QWidget,
-    QMessageBox,
-)
-
-from logger import logger
+from PySide6.QtWidgets import QApplication, QMessageBox, QWidget
 
 from app.msg_systray import TrayIcon
+from feather_hotkey.thread import SignalHotKey
 from feather_hotkey.win_searchbar import WinSearchBar
 from feather_timer.halahayawa import WinHowLongHadYouWork
+from logger import logger
 
-from feather_hotkey.thread import SignalHotKey
+# from PySide6.QtGui import QFont, QIcon
 
 
 class WinMain(QWidget):
@@ -34,6 +29,7 @@ class WinMain(QWidget):
     虚假的主窗口
     所有的子`QWidget`理论上都可以独立运行
     """
+
     def __init__(self, screen=False, app=None):
         super().__init__(None)
 
@@ -82,7 +78,6 @@ class WinMain(QWidget):
             event.accept()
         else:
             event.ignore()
-
 
 
 if __name__ == "__main__":

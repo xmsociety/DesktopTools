@@ -4,6 +4,7 @@ from PySide6.QtCore import Qt
 from PySide6.QtWidgets import QCompleter, QWidget
 
 from logger import logger
+
 from .clip_string import ClipFuncs
 from .ui_searchbar import Ui_SearchBar
 
@@ -41,9 +42,7 @@ class WinSearchBar(QWidget):
         self.ui.pushButton.clicked.connect(self.clip_worker)
         self.ui.pushButton.setDefault(True)
         self.clip_funcs = ClipFuncs(clipboard=self.app.clipboard())
-        completer = FuzzyCompleter(
-            [i for i in self.clip_funcs.dict_registered.keys()]
-        )
+        completer = FuzzyCompleter([i for i in self.clip_funcs.dict_registered.keys()])
         # self.setStyle()
         completer.setCaseSensitivity(Qt.CaseInsensitive)
         self.ui.lineEdit.setCompleter(completer)
@@ -62,18 +61,17 @@ class WinSearchBar(QWidget):
         logger.info(f"run cmd is: {cmd}")
 
         registered_key = cmd
-        ok, err = True, ''
+        ok, err = True, ""
         try:
             if ClipFuncs.SplitSign in cmd:
                 registered_key, target_symbol = cmd.split(ClipFuncs.SplitSign)
                 ok, err = self.clip_funcs.dict_registered.get(
-                    registered_key+ClipFuncs.SplitSign, self.unregistered_warning
-                )(
-                    target_symbol=target_symbol
-                )
+                    registered_key + ClipFuncs.SplitSign, self.unregistered_warning
+                )(target_symbol=target_symbol)
             else:
                 ok, err = self.clip_funcs.dict_registered.get(
-                    registered_key, self.unregistered_warning)()
+                    registered_key, self.unregistered_warning
+                )()
             if not ok:
                 self.ui.lineEdit.setText(err)
             else:
