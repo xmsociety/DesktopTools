@@ -44,8 +44,14 @@ class WinSearchBar(QWidget):
         completer = FuzzyCompleter(
             [i for i in self.clip_funcs.dict_registered.keys()]
         )
+        # self.setStyle()
         completer.setCaseSensitivity(Qt.CaseInsensitive)
         self.ui.lineEdit.setCompleter(completer)
+
+    def setStyle(self):
+        # self.setWindowFlags(self.windowFlags() | Qt.FramelessWindowHint)
+        self.setWindowFlags(Qt.FramelessWindowHint)
+        self.setAttribute(Qt.WA_TranslucentBackground)
 
     def unregistered_warning(self, *arg, **kwargs):
         self.ui.lineEdit.setText("命令错误-没有匹配到处理方法")

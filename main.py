@@ -60,6 +60,7 @@ class WinMain(QWidget):
     def open_search_bar(self):
         self.win_searchbar.setWindowFlags(Qt.WindowStaysOnTopHint)
         if not self.win_searchbar.isVisible():
+            self.win_searchbar.setStyle()
             self.win_searchbar.show()
         self.win_searchbar.activateWindow()
 

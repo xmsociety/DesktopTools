@@ -22,22 +22,40 @@ class Ui_SearchBar(object):
     def setupUi(self, SearchBar):
         if not SearchBar.objectName():
             SearchBar.setObjectName(u"SearchBar")
-        SearchBar.resize(286, 166)
+        SearchBar.resize(701, 280)
+        SearchBar.setStyleSheet(u"            background-color: #F9F9F9;\n"
+"            color: #333333;\n"
+"            font-size: 16px;\n"
+"            font-family: Arial, sans-serif;")
         self.horizontalLayout_2 = QHBoxLayout(SearchBar)
         self.horizontalLayout_2.setObjectName(u"horizontalLayout_2")
         self.horizontalLayout = QHBoxLayout()
         self.horizontalLayout.setObjectName(u"horizontalLayout")
         self.lineEdit = QLineEdit(SearchBar)
         self.lineEdit.setObjectName(u"lineEdit")
-        self.lineEdit.setMinimumSize(QSize(0, 32))
+        self.lineEdit.setMinimumSize(QSize(520, 32))
         font = QFont()
-        font.setFamilies([u"Cascadia Code"])
+        font.setFamilies([u"Arial"])
         self.lineEdit.setFont(font)
+        self.lineEdit.setLayoutDirection(Qt.LeftToRight)
+        self.lineEdit.setStyleSheet(u"            background-color: #FFFFFF;\n"
+"            border-radius: 40px;\n"
+"            border: 2px solid #CCCCCC;\n"
+"            padding: 20px;\n"
+"            font-size: 16px;\n"
+"            font-family: Arial, sans-serif;")
 
         self.horizontalLayout.addWidget(self.lineEdit)
 
         self.pushButton = QPushButton(SearchBar)
         self.pushButton.setObjectName(u"pushButton")
+        self.pushButton.setStyleSheet(u"            background-color: #008CBA;\n"
+"            border-radius: 40px;\n"
+"            border: none;\n"
+"            padding: 20px 40px;\n"
+"            font-size: 16px;\n"
+"            font-family: Arial, sans-serif;\n"
+"            color: #FFFFFF;")
 
         self.horizontalLayout.addWidget(self.pushButton)
 
