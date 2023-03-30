@@ -2,6 +2,7 @@ import sys
 
 from PySide6.QtCore import Qt
 from PySide6.QtWidgets import QCompleter, QWidget
+from PySide6.QtGui import QStandardItemModel, QStandardItem
 
 from logger import logger
 
@@ -39,13 +40,15 @@ class WinSearchBar(QWidget):
         self.ui.setupUi(self)
         self.app = app
         # self.ui.pushButton.clicked.connect(lambda: self.click_2())
-        self.ui.pushButton.clicked.connect(self.clip_worker)
         self.ui.pushButton.setDefault(True)
+        self.ui.listView.hide()
         self.clip_funcs = ClipFuncs(clipboard=self.app.clipboard())
         completer = FuzzyCompleter([i for i in self.clip_funcs.dict_registered.keys()])
         # self.setStyle()
         completer.setCaseSensitivity(Qt.CaseInsensitive)
         self.ui.lineEdit.setCompleter(completer)
+        self.ui.pushButton.clicked.connect(self.clip_worker)
+        self.ui.lineEdit.textChanged.connect(self.handleTextChange)
 
     def setStyle(self):
         # self.setWindowFlags(self.windowFlags() | Qt.FramelessWindowHint)
@@ -56,6 +59,19 @@ class WinSearchBar(QWidget):
         self.ui.lineEdit.setText("命令错误-没有匹配到处理方法")
         return False, "命令错误-没有匹配到处理方法"
 
+    def handleTextChange(self):
+        text = self.ui.lineEdit.text()
+        if text:
+            self.ui.listView.show()
+            model = QStandardItemModel()
+            model.setHorizontalHeaderLabels([''])
+            item = QStandardItem('这里是静态文本')
+            item.setTextAlignment(Qt.AlignCenter)
+            model.setItem(0, 0, item)
+            self.ui.listView.setModel(model)
+        else:
+            self.ui.listView.hide()
+        
     def clip_worker(self):
         cmd = self.ui.lineEdit.text()
         logger.info(f"run cmd is: {cmd}")
