@@ -1,7 +1,7 @@
 import sys
 
-from PySide6.QtCore import Qt
-from PySide6.QtWidgets import QCompleter, QWidget
+from PySide6.QtCore import Qt, QStringListModel
+from PySide6.QtWidgets import QCompleter, QWidget, QAbstractItemView
 from PySide6.QtGui import QStandardItemModel, QStandardItem
 
 from logger import logger
@@ -43,12 +43,18 @@ class WinSearchBar(QWidget):
         self.ui.pushButton.setDefault(True)
         self.ui.listView.hide()
         self.clip_funcs = ClipFuncs(clipboard=self.app.clipboard())
+        # region lineEdit completer实现方式
         completer = FuzzyCompleter([i for i in self.clip_funcs.dict_registered.keys()])
-        # self.setStyle()
-        completer.setCaseSensitivity(Qt.CaseInsensitive)
+        completer.setCaseSensitivity(Qt.CaseInsensitive) # 下拉模式
+        # completer.setCaseSensitivity(False)
+        # completer.setCompletionMode(QCompleter.InlineCompletion)
+        # self.ui.listView.setWindowFlags(Qt.Popup)
+        #endregion
         self.ui.lineEdit.setCompleter(completer)
+        self.ui.listView.setSelectionBehavior(QAbstractItemView.SelectRows)
         self.ui.pushButton.clicked.connect(self.clip_worker)
         self.ui.lineEdit.textChanged.connect(self.handleTextChange)
+        self.ui.listView.clicked.connect(self.on_listView_clicked)
 
     def setStyle(self):
         # self.setWindowFlags(self.windowFlags() | Qt.FramelessWindowHint)
@@ -59,16 +65,32 @@ class WinSearchBar(QWidget):
         self.ui.lineEdit.setText("命令错误-没有匹配到处理方法")
         return False, "命令错误-没有匹配到处理方法"
 
+    def on_listView_clicked(self, index):
+        completion_text = index.data()
+        self.ui.lineEdit.setText(completion_text)
+        # selistView.hide()
+
+    def show_completions(self, prefix):
+        self.ui.listView.setModel(QStringListModel(["apple", "banana", "cherry", "aaaaa!"]))
+        completer_list = ["apple", "banana", "cherry", "aaaaa!"]
+        self.ui.listView.model().setStringList([item for item in completer_list if item.lower().startswith(prefix.lower())])
+        if self.ui.listView.model().rowCount() == 0:
+            self.ui.listView.hide()
+        else:
+            self.ui.listView.show()
+            self.ui.listView.setCurrentIndex(self.ui.listView.model().index(0, 0))
+
     def handleTextChange(self):
         text = self.ui.lineEdit.text()
         if text:
-            self.ui.listView.show()
-            model = QStandardItemModel()
-            model.setHorizontalHeaderLabels([''])
-            item = QStandardItem('这里是静态文本')
-            item.setTextAlignment(Qt.AlignCenter)
-            model.setItem(0, 0, item)
-            self.ui.listView.setModel(model)
+            # self.ui.listView.show()
+            self.show_completions(text)
+            # model = QStandardItemModel()
+            # model.setHorizontalHeaderLabels([''])
+            # item = QStandardItem('这里是静态文本')
+            # item.setTextAlignment(Qt.AlignCenter)
+            # model.setItem(0, 0, item)
+            # self.ui.listView.setModel(model)
         else:
             self.ui.listView.hide()
         

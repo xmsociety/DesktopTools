@@ -37,6 +37,9 @@
             font-size: 18px;
             font-family: Arial, sans-serif;</string>
          </property>
+         <property name="placeholderText">
+          <string>开始输入命令...</string>
+         </property>
         </widget>
        </item>
        <item>
