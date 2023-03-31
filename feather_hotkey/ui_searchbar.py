@@ -84,6 +84,7 @@ class Ui_SearchBar(object):
 
     def retranslateUi(self, SearchBar):
         SearchBar.setWindowTitle(QCoreApplication.translate("SearchBar", u"\u5c0f\u547d\u4ee4\u5de5\u5177", None))
+        self.lineEdit.setPlaceholderText(QCoreApplication.translate("SearchBar", u"\u5f00\u59cb\u8f93\u5165\u547d\u4ee4...", None))
         self.pushButton.setText(QCoreApplication.translate("SearchBar", u"\u786e\u5b9a", None))
     # retranslateUi
 
