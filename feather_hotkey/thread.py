@@ -11,7 +11,7 @@ class SignalHotKey(QThread):
     def listen(self):
         hotkey = keyboard.GlobalHotKeys(
             {
-                "<alt>+<shift>+c": self.on_activate,
+                "<alt>+<shift>": self.on_activate,
                 "<ctrl>+<alt>+g": lambda: print("Goodbye"),
             }
         )
