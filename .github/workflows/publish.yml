@@ -31,7 +31,7 @@ jobs:
         run: python scripts/check.py
       - name: Test and generate coverage report
         run: |
-          pytest --cov=DesktopTools --cov-report=xml 
+          pytest --cov=DesktopTools --cov-report=xml
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v2
         with:
