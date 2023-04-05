@@ -36,6 +36,19 @@ Python(不会卡的太死lol)
 - yapf: 代码格式化 
 
 # 使用
+## PyPi
+```bash
+# 源码
+git clone git@github.com:IanVzs/Halahayawa.git DesktopTools
+cd DesktopTools/
+make build
+DesktopTools
+
+# pypi
+pip install DesktopTools[ui]
+# 可选 -i https://pypi.tuna.tsinghua.edu.cn/simple
+DesktopTools
+```
 ## 源码
 ```bash
 git clone git@github.com:IanVzs/Halahayawa.git DesktopTools
@@ -44,7 +57,7 @@ mkdir env
 python3 -m venv ./env
 source ~/env/bin/activate
 pip install -r requirements.txt -i https://pypi.tuna.tsinghua.edu.cn/simple
-python main.py
+make run # or python test.py
 ```
 
 可根据实际情况进行适当调整

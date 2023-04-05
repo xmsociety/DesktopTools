@@ -7,7 +7,7 @@ import shutil
 from PySide6.QtCore import Qt
 from PySide6.QtGui import QClipboard, QPixmap
 
-from logger import logger
+from ..logger import logger
 
 
 def incremental_copy_files(source_path: str, dest_path: str, number: int):

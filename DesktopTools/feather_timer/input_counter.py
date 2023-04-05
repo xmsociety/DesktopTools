@@ -4,8 +4,7 @@ from PySide6.QtCore import SIGNAL, QAbstractTableModel, Qt
 from PySide6.QtWidgets import QHBoxLayout  # QMessageBox,; QWidget,
 from PySide6.QtWidgets import QDialog, QPushButton, QTableView, QVBoxLayout
 
-from logger import logger
-
+from ..logger import logger
 from .data_alchemy import inputs
 
 # from PySide2.QtCharts import QtCharts # PySide6 不能这么引入

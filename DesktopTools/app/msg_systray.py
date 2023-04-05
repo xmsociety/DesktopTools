@@ -1,3 +1,4 @@
+import os
 import sys
 
 from PySide6.QtGui import QAction, QIcon
@@ -40,7 +41,11 @@ class TrayIcon(QSystemTrayIcon):
         self.messageClicked.connect(self.msgClickEvent)
 
         # 设置图标
-        self.setIcon(QIcon("harry_potter.ico"))
+        app_path = os.path.dirname(os.path.abspath(__file__))
+        root_path, app_fname = os.path.split(app_path)
+        if app_fname == "app":
+            ico_path = os.path.join(root_path, "harry_potter.ico")
+            self.setIcon(QIcon(ico_path))
         self.icon = self.MessageIcon(QSystemTrayIcon.MessageIcon.NoIcon)
 
     def iconClicked(self, reason):

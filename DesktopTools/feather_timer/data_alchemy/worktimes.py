@@ -1,9 +1,9 @@
 from datetime import date
+
 from sqlalchemy import desc
 from sqlalchemy.exc import IntegrityError
 
-from tools import time_now
-
+from ...tools import time_now
 from .models import Session, WorkInfo
 
 

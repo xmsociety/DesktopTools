@@ -1,11 +1,10 @@
 import sys
 
-from PySide6.QtCore import Qt, QStringListModel
-from PySide6.QtWidgets import QCompleter, QWidget, QAbstractItemView
-from PySide6.QtGui import QStandardItemModel, QStandardItem
+from PySide6.QtCore import QStringListModel, Qt
+from PySide6.QtGui import QStandardItem, QStandardItemModel
+from PySide6.QtWidgets import QAbstractItemView, QCompleter, QWidget
 
-from logger import logger
-
+from ..logger import logger
 from .clip_string import ClipFuncs
 from .ui_searchbar import Ui_SearchBar
 
@@ -45,11 +44,11 @@ class WinSearchBar(QWidget):
         self.clip_funcs = ClipFuncs(clipboard=self.app.clipboard())
         # region lineEdit completer实现方式
         completer = FuzzyCompleter([i for i in self.clip_funcs.dict_registered.keys()])
-        completer.setCaseSensitivity(Qt.CaseInsensitive) # 下拉模式
+        completer.setCaseSensitivity(Qt.CaseInsensitive)  # 下拉模式
         # completer.setCaseSensitivity(False)
         # completer.setCompletionMode(QCompleter.InlineCompletion)
         # self.ui.listView.setWindowFlags(Qt.Popup)
-        #endregion
+        # endregion
         self.ui.lineEdit.setCompleter(completer)
         self.ui.listView.setSelectionBehavior(QAbstractItemView.SelectRows)
         self.ui.pushButton.clicked.connect(self.clip_worker)
@@ -71,9 +70,13 @@ class WinSearchBar(QWidget):
         # selistView.hide()
 
     def show_completions(self, prefix):
-        self.ui.listView.setModel(QStringListModel(["apple", "banana", "cherry", "aaaaa!"]))
+        self.ui.listView.setModel(
+            QStringListModel(["apple", "banana", "cherry", "aaaaa!"])
+        )
         completer_list = ["apple", "banana", "cherry", "aaaaa!"]
-        self.ui.listView.model().setStringList([item for item in completer_list if item.lower().startswith(prefix.lower())])
+        self.ui.listView.model().setStringList(
+            [item for item in completer_list if item.lower().startswith(prefix.lower())]
+        )
         if self.ui.listView.model().rowCount() == 0:
             self.ui.listView.hide()
         else:
@@ -93,7 +96,7 @@ class WinSearchBar(QWidget):
             # self.ui.listView.setModel(model)
         else:
             self.ui.listView.hide()
-        
+
     def clip_worker(self):
         cmd = self.ui.lineEdit.text()
         logger.info(f"run cmd is: {cmd}")

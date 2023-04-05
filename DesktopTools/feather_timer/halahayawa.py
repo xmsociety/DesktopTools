@@ -9,6 +9,7 @@ author: Ian Vzs
 website: https://github.com/IanVzs/Halahayawa
 Last edited: 22 2 2021
 """
+import os
 import sys
 import time
 
@@ -16,21 +17,32 @@ import time
 # from PyQt5.QtGui import QIcon, QFont
 from PySide6.QtCore import Qt, QTimer
 from PySide6.QtGui import QFont, QIcon
-from PySide6.QtWidgets import (QApplication, QHBoxLayout, QLabel, QMessageBox,
-                               QPushButton, QVBoxLayout, QWidget)
+from PySide6.QtWidgets import (
+    QApplication,
+    QHBoxLayout,
+    QLabel,
+    QMessageBox,
+    QPushButton,
+    QVBoxLayout,
+    QWidget,
+)
 
-from app import msg_systray
-from args import MOUSE  # Alert_LockWorkStation_MSG,
-from args import (KEYBOARD, Alert_REST_KEEP_MSG, Alert_REST_MSG,
-                  Alert_REST_MUST_MSG, KEYBOARD_DeviceNo, MOUSE_DeviceNo,
-                  NUM_REST_KEEP_Alert, args)
-from logger import slogger
-from tools import lenth_time, lock_work_station, time_now
-
+from ..args import MOUSE  # Alert_LockWorkStation_MSG,
+from ..args import (
+    KEYBOARD,
+    Alert_REST_KEEP_MSG,
+    Alert_REST_MSG,
+    Alert_REST_MUST_MSG,
+    KEYBOARD_DeviceNo,
+    MOUSE_DeviceNo,
+    NUM_REST_KEEP_Alert,
+    args,
+)
+from ..logger import slogger
+from ..tools import lenth_time, lock_work_station, time_now
 from . import input_counter
 from .data_alchemy.models import WorkInfo
-from .monitor import (AlertDict, SignalKeyboard, SignalMouse, ThreadSignal,
-                      WorkDict)
+from .monitor import AlertDict, SignalKeyboard, SignalMouse, ThreadSignal, WorkDict
 
 
 class WinHowLongHadYouWork(QWidget):
@@ -132,7 +144,14 @@ class WinHowLongHadYouWork(QWidget):
         # self.setGeometry(300, 300, 300, 220)
         self.center()
         self.setWindowTitle("Pendulum")
-        self.setWindowIcon(QIcon("harry_potter.ico"))
+
+        # 设置图标
+        app_path = os.path.dirname(os.path.abspath(__file__))
+        root_path, feather_fname = os.path.split(app_path)
+        if feather_fname.startswith("feather"):
+            ico_path = os.path.join(root_path, "harry_potter.ico")
+            self.setWindowIcon(QIcon(ico_path))
+            # self.setWindowIcon(QIcon("harry_potter.ico"))
 
         self.vbox, self.hbox, self.hbox2, self.hbox3 = self.initBoxLayout()
         self.initMainWidgets()

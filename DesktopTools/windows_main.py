@@ -9,17 +9,16 @@ author: Ian Vzs
 website: https://github.com/IanVzs/Halahayawa
 Last edited: 22 2 2021
 """
-import sys
 import time
 
 from PySide6.QtCore import Qt
-from PySide6.QtWidgets import QApplication, QMessageBox, QWidget
+from PySide6.QtWidgets import QMessageBox, QWidget
 
-from app.msg_systray import TrayIcon
-from feather_hotkey.thread import SignalHotKey
-from feather_hotkey.win_searchbar import WinSearchBar
-from feather_timer.halahayawa import WinHowLongHadYouWork
-from logger import logger
+from .app.msg_systray import TrayIcon
+from .feather_hotkey.thread import SignalHotKey
+from .feather_hotkey.win_searchbar import WinSearchBar
+from .feather_timer.halahayawa import WinHowLongHadYouWork
+from .logger import logger
 
 # from PySide6.QtGui import QFont, QIcon
 
@@ -78,10 +77,3 @@ class WinMain(QWidget):
             event.accept()
         else:
             event.ignore()
-
-
-if __name__ == "__main__":
-    app = QApplication(sys.argv)
-    screen = app.primaryScreen().geometry()
-    ex = WinMain(screen, app=app)
-    sys.exit(app.exec())
