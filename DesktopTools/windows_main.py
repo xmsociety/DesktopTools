@@ -9,23 +9,18 @@ author: Ian Vzs
 website: https://github.com/IanVzs/Halahayawa
 Last edited: 22 2 2021
 """
-import sys
 import time
-# from PySide6.QtGui import QFont, QIcon
 
 from PySide6.QtCore import Qt
-from PySide6.QtWidgets import (
-    QApplication,
-    QWidget,
-    QMessageBox,
-)
+from PySide6.QtWidgets import QMessageBox, QWidget
 
-from logger import logger
+from .app.msg_systray import TrayIcon
+from .feather_hotkey.thread import SignalHotKey
+from .feather_hotkey.win_searchbar import WinSearchBar
+from .feather_timer.halahayawa import WinHowLongHadYouWork
+from .logger import logger
 
-from feather_hotkey.win_searchbar import WinSearchBar
-from feather_timer.halahayawa import WinHowLongHadYouWork
-
-from feather_hotkey.thread import SignalHotKey
+# from PySide6.QtGui import QFont, QIcon
 
 
 class WinMain(QWidget):
@@ -33,16 +28,19 @@ class WinMain(QWidget):
     虚假的主窗口
     所有的子`QWidget`理论上都可以独立运行
     """
+
     def __init__(self, screen=False, app=None):
         super().__init__(None)
 
         self.screen = screen
+        self.tray = TrayIcon(self)
         self.win_searchbar = WinSearchBar(app)
-        self.win_timer = WinHowLongHadYouWork(screen)
+        self.win_timer = WinHowLongHadYouWork(screen, self.tray)
 
         self.initSearchBar()
 
         self.win_timer.show()
+        self.tray.show()
 
     def initSearchBar(self):
         """
@@ -57,6 +55,7 @@ class WinMain(QWidget):
     def open_search_bar(self):
         self.win_searchbar.setWindowFlags(Qt.WindowStaysOnTopHint)
         if not self.win_searchbar.isVisible():
+            self.win_searchbar.setStyle()
             self.win_searchbar.show()
         self.win_searchbar.activateWindow()
 
@@ -64,6 +63,7 @@ class WinMain(QWidget):
         """退出确认"""
         # TODO 测试期嫌累
         self.win_searchbar.close()
+        self.win_timer.close()
         return
         reply = QMessageBox.question(
             self,
@@ -77,11 +77,3 @@ class WinMain(QWidget):
             event.accept()
         else:
             event.ignore()
-
-
-
-if __name__ == "__main__":
-    app = QApplication(sys.argv)
-    screen = app.primaryScreen().geometry()
-    ex = WinMain(screen, app=app)
-    sys.exit(app.exec())

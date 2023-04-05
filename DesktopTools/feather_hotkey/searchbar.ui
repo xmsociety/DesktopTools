@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>SearchBar</class>
+ <widget class="QWidget" name="SearchBar">
+  <property name="enabled">
+   <bool>true</bool>
+  </property>
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>701</width>
+    <height>280</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>小命令工具</string>
+  </property>
+  <property name="styleSheet">
+   <string notr="true">            background-color: #F9F9F9;
+            color: #333333;
+            font-size: 16px;
+            font-family: Arial, sans-serif;</string>
+  </property>
+  <layout class="QHBoxLayout" name="horizontalLayout_2">
+   <item>
+    <layout class="QVBoxLayout" name="verticalLayout">
+     <item>
+      <layout class="QHBoxLayout" name="horizontalLayout_3">
+       <item>
+        <widget class="QLineEdit" name="lineEdit">
+         <property name="styleSheet">
+          <string notr="true">            background-color: #FFFFFF;
+            border-radius: 40px;
+            border: 2px solid #CCCCCC;
+            padding: 20px;
+            font-size: 18px;
+            font-family: Arial, sans-serif;</string>
+         </property>
+         <property name="placeholderText">
+          <string>开始输入命令...</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="pushButton">
+         <property name="styleSheet">
+          <string notr="true">            background-color: #008CBA;
+            border-radius: 40px;
+            border: none;
+            padding: 20px 40px;
+            font-size: 18px;
+            font-family: Arial, sans-serif;
+            color: #FFFFFF;</string>
+         </property>
+         <property name="text">
+          <string>确定</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </item>
+     <item>
+      <widget class="QListView" name="listView">
+       <property name="enabled">
+        <bool>true</bool>
+       </property>
+       <property name="styleSheet">
+        <string notr="true">background-color: #FFFFFF;
+border-radius: 10px;
+border: 2px solid #CCCCCC;
+padding: 20px;
+font-size: 18px;
+font-family: Arial, sans-serif;</string>
+       </property>
+       <property name="locale">
+        <locale language="Chinese" country="China"/>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+  </layout>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

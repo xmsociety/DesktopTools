@@ -4,7 +4,7 @@ from pynput import keyboard, mouse
 from PySide6.QtCore import QThread, Signal
 from sqlalchemy import create_engine
 
-from args import (
+from ..args import (
     ERROR_CATCH_NAME,
     KEYBOARD_DeviceNo,
     MOUSE_DeviceNo,
@@ -12,7 +12,7 @@ from args import (
     TICKER_DeviceNo,
     args,
 )
-from logger import logger, slogger
+from ..logger import logger, slogger
 from .data_alchemy.inputs import add_count_keymouse
 from .data_alchemy.models import WorkInfo
 from .data_alchemy.worktimes import write_work_info
@@ -130,7 +130,7 @@ class SignalKeyboard(QThread):
     def log_event(self, name, key, save=0):
         try:
             char_name = key.__dict__.get("char")
-            vk = key.__dict__.get("vk", '')
+            vk = key.__dict__.get("vk", "")
             event_name = name
             if char_name:
                 char_name = key.char

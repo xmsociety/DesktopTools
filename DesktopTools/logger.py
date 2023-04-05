@@ -2,7 +2,7 @@ import sys
 
 from loguru import logger
 
-from args import args
+from .args import args
 
 if not args.debug:
     logger.remove(handler_id=None)

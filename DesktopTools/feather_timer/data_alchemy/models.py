@@ -1,5 +1,3 @@
-from datetime import datetime
-
 from sqlalchemy import (
     CHAR,
     Column,
@@ -20,7 +18,8 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.ext.hybrid import hybrid_method, hybrid_property
 from sqlalchemy.orm import sessionmaker
 
-from args import args
+from ...args import args
+from ...tools import datetime2str
 
 time_now = func.datetime("now", "localtime") if args.localtime else func.now()
 # check_same_thread 不检测是否和创建线程为同一线程--可供多线程使用
