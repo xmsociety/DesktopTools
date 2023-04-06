@@ -33,11 +33,12 @@ class WinSearchBar(QWidget):
     功能搜索框
     """
 
-    def __init__(self, app=None, *args, **kwargs):
+    def __init__(self, app=None, dict_windows={}, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.ui = Ui_SearchBar()
         self.ui.setupUi(self)
         self.app = app
+        self.dict_windows = dict_windows
         # self.ui.pushButton.clicked.connect(lambda: self.click_2())
         self.ui.pushButton.setDefault(True)
         self.ui.listView.hide()
@@ -65,18 +66,38 @@ class WinSearchBar(QWidget):
         return False, "命令错误-没有匹配到处理方法"
 
     def on_listView_clicked(self, index):
+        """
+        下拉候选项被点击时的处理动作
+        """
         completion_text = index.data()
-        self.ui.lineEdit.setText(completion_text)
+        if completion_text in set(self.dict_windows.keys()):
+            self.dict_windows[completion_text].show()
+            self.hide()
+        else:
+            self.ui.lineEdit.setText(completion_text)
         # selistView.hide()
 
-    def show_completions(self, prefix):
-        self.ui.listView.setModel(
-            QStringListModel(["apple", "banana", "cherry", "aaaaa!"])
-        )
-        completer_list = ["apple", "banana", "cherry", "aaaaa!"]
-        self.ui.listView.model().setStringList(
-            [item for item in completer_list if item.lower().startswith(prefix.lower())]
-        )
+    def like_open_windows(self, text) -> bool:
+        """
+        判断输入文本是否是想要打开功能窗口
+        """
+        # TODO 有待优化
+        all_win_key = "".join([i for i in self.dict_windows.keys()])
+        if text in all_win_key:
+            return True
+        return False
+
+    def show_completions(self, text):
+        """
+        显示搜索框下推listView荐项
+        """
+        list_model = ["apple", "banana", "cherry", "aaaaa!"]
+        list_model = [i for i in list_model if i.lower().startswith(text.lower())]
+        if self.like_open_windows(text=text):
+            list_model += list(self.dict_windows.keys())
+        self.ui.listView.setModel(QStringListModel(list_model))
+        # completer_list = ["apple", "banana", "cherry", "aaaaa!"]
+        self.ui.listView.model().setStringList(list_model)
         if self.ui.listView.model().rowCount() == 0:
             self.ui.listView.hide()
         else:

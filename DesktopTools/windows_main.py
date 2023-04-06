@@ -34,12 +34,14 @@ class WinMain(QWidget):
 
         self.screen = screen
         self.tray = TrayIcon(self)
-        self.win_searchbar = WinSearchBar(app)
+
         self.win_timer = WinHowLongHadYouWork(screen, self.tray)
+        dict_win_feather = {"工作时长": self.win_timer}
+        self.win_searchbar = WinSearchBar(app, dict_win_feather)
 
         self.initSearchBar()
 
-        self.win_timer.show()
+        # self.win_timer.show()
         self.tray.show()
 
     def initSearchBar(self):
