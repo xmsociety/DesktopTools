@@ -16,7 +16,7 @@ parser.add_argument(
     "--work_buffer_len", type=int, default=60, help="work T rest buffer lenth. n /s"
 )
 
-args = parser.parse_args()
+args = parser.parse_args(args=[])
 
 KEYBOARD, MOUSE = "keyboard", "mouse"
 

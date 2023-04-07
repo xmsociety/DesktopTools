@@ -69,10 +69,10 @@ make run # or python test.py
 ### windows打包
 `--icon`经测必须使用绝对路径.
 ```bash
-pyinstaller --specpath=executable_files --distpath=executable_files --hidden-import=pynput.keyboard._xorg --hidden-import=pynput.mouse._xorg --hidden-import=sqlalchemy.sql.default_comparator --hidden-import=sqlalchemy.ext.baked --icon="C:\\Users\\USERNAME\\Desktop\\Halahayawa\\harry_potter.ico" -w -D --clean halahayawa.py
+pyinstaller --specpath=executable_files --distpath=executable_files --hidden-import=pynput.keyboard._xorg --hidden-import=pynput.mouse._xorg --hidden-import=sqlalchemy.sql.default_comparator --hidden-import=sqlalchemy.ext.baked --icon="C:\\Users\\{USERNAME}\\Desktop\\Halahayawa\\DesktopTools\\harry_potter.ico" -w -D --clean .\test.py
 # cp harry_potter.ico executable_files/halahayawa 复制harry_potter.ico到程序目录
 ```
 ### linux打包
 ```
-pyinstaller --specpath=executable_files --distpath=executable_files --hidden-import=pynput.keyboard._xorg --hidden-import=pynput.mouse._xorg --hidden-import=sqlalchemy.sql.default_comparator -w -D --clean halahayawa.py
+pyinstaller --specpath=executable_files --distpath=executable_files --hidden-import=pynput.keyboard._xorg --hidden-import=pynput.mouse._xorg --hidden-import=sqlalchemy.sql.default_comparator -w -D --clean test.py
 ```

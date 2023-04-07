@@ -146,12 +146,16 @@ class WinHowLongHadYouWork(QWidget):
         self.setWindowTitle("Pendulum")
 
         # 设置图标
-        app_path = os.path.dirname(os.path.abspath(__file__))
-        root_path, feather_fname = os.path.split(app_path)
-        if feather_fname.startswith("feather"):
-            ico_path = os.path.join(root_path, "harry_potter.ico")
-            self.setWindowIcon(QIcon(ico_path))
-            # self.setWindowIcon(QIcon("harry_potter.ico"))
+        ico_path = ""
+        if os.path.exists("harry_potter.ico"):
+            ico_path = "harry_potter.ico"
+        else:
+            app_path = os.path.dirname(os.path.abspath(__file__))
+            root_path, feather_fname = os.path.split(app_path)
+            if feather_fname.startswith("feather"):
+                ico_path = os.path.join(root_path, "harry_potter.ico")
+        self.setWindowIcon(QIcon(ico_path))
+        # self.setWindowIcon(QIcon("harry_potter.ico"))
 
         self.vbox, self.hbox, self.hbox2, self.hbox3 = self.initBoxLayout()
         self.initMainWidgets()

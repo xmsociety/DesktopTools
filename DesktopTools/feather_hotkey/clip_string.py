@@ -52,7 +52,11 @@ def safe_eval(expr):
     allowed_globals = {"__builtins__": None}
     allowed_locals = {}
     # 执行表达式
-    result = eval(expr, allowed_globals, allowed_locals)
+    result = None
+    try:
+        result = eval(expr, allowed_globals, allowed_locals)
+    except Exception:
+        pass
     return result
 
 

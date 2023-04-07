@@ -37,7 +37,7 @@ class WinMain(QWidget):
 
         self.win_timer = WinHowLongHadYouWork(screen, self.tray)
         dict_win_feather = {"工作时长": self.win_timer}
-        self.win_searchbar = WinSearchBar(app, dict_win_feather)
+        self.win_searchbar = WinSearchBar(app, self.tray, dict_win_feather)
 
         self.initSearchBar()
 

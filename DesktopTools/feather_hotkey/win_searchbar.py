@@ -1,11 +1,11 @@
-import sys
+import os
 
 from PySide6.QtCore import QStringListModel, Qt
-from PySide6.QtGui import QStandardItem, QStandardItemModel
+from PySide6.QtGui import QIcon, QStandardItem, QStandardItemModel
 from PySide6.QtWidgets import QAbstractItemView, QCompleter, QWidget
 
 from ..logger import logger
-from .clip_string import ClipFuncs
+from .clip_string import ClipFuncs, safe_eval
 from .ui_searchbar import Ui_SearchBar
 
 
@@ -32,12 +32,14 @@ class WinSearchBar(QWidget):
     """
     功能搜索框
     """
+    SignCommand = "eval 执行它(请仔细核对命令,并知晓后果)"
 
-    def __init__(self, app=None, dict_windows={}, *args, **kwargs):
+    def __init__(self, app=None, tray=None, dict_windows={}, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.ui = Ui_SearchBar()
         self.ui.setupUi(self)
         self.app = app
+        self.tray = tray
         self.dict_windows = dict_windows
         # self.ui.pushButton.clicked.connect(lambda: self.click_2())
         self.ui.pushButton.setDefault(True)
@@ -55,6 +57,20 @@ class WinSearchBar(QWidget):
         self.ui.pushButton.clicked.connect(self.clip_worker)
         self.ui.lineEdit.textChanged.connect(self.handleTextChange)
         self.ui.listView.clicked.connect(self.on_listView_clicked)
+        self.command = None
+        self.set_icon()
+
+    def set_icon(self):
+        """设置图标"""
+        ico_path = ""
+        if os.path.exists("harry_potter.ico"):
+            ico_path = "harry_potter.ico"
+        else:
+            app_path = os.path.dirname(os.path.abspath(__file__))
+            root_path, feather_fname = os.path.split(app_path)
+            if feather_fname.startswith("feather"):
+                ico_path = os.path.join(root_path, "harry_potter.ico")
+        self.setWindowIcon(QIcon(ico_path))
 
     def setStyle(self):
         # self.setWindowFlags(self.windowFlags() | Qt.FramelessWindowHint)
@@ -73,9 +89,22 @@ class WinSearchBar(QWidget):
         if completion_text in set(self.dict_windows.keys()):
             self.dict_windows[completion_text].show()
             self.hide()
+        elif completion_text == self.SignCommand:
+            try:
+                exec(self.command)
+            except Exception as err:
+                self.tray.show_warning_msg(f"代码有误: {err}")
         else:
             self.ui.lineEdit.setText(completion_text)
         # selistView.hide()
+
+    def like_eval_command(self, text) -> bool:
+        try:
+            self.command = compile(text, "<string>", "exec")  # 执行 没有返回值
+            # self.command = compile(text, "<string>", "eval") # 求值import语句无法执行
+            return True
+        except Exception:
+            return False
 
     def like_open_windows(self, text) -> bool:
         """
@@ -95,6 +124,12 @@ class WinSearchBar(QWidget):
         list_model = [i for i in list_model if i.lower().startswith(text.lower())]
         if self.like_open_windows(text=text):
             list_model += list(self.dict_windows.keys())
+        if self.like_eval_command(text=text):
+            rst = safe_eval(text)
+            if isinstance(rst, int) or isinstance(rst, float):
+                list_model.append(f"计算结果是: {rst}")
+            else:
+                list_model.append(self.SignCommand)
         self.ui.listView.setModel(QStringListModel(list_model))
         # completer_list = ["apple", "banana", "cherry", "aaaaa!"]
         self.ui.listView.model().setStringList(list_model)
