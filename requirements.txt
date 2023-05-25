@@ -4,3 +4,4 @@ loguru
 sqlalchemy
 yapf
 pyinstaller
+pydantic

@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "DesktopTools"
-version = "0.0.3"
+version = "0.0.4"
 description = "A desktop tool that includes some useful scripts."
 authors = ["ianvzs <ianvzs@outlook.com>", "saint <ysudqfs@163.com>"]
 readme = "README.md"
@@ -24,6 +24,7 @@ loguru = "^0.6.0"
 SQLAlchemy = "^2.0.0"
 yapf = "^0.32.0"
 wheel = "^0.40.0"
+pydantic = "^1.10.7"
 
 
 [tool.poetry.extras]

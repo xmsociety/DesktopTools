@@ -64,6 +64,9 @@ class TrayIcon(QSystemTrayIcon):
     def show_warning_msg(self, text):
         self.showMessage("警告", text, self.MessageIcon(QSystemTrayIcon.Warning))
 
+    def show_info_msg(self, text):
+        self.showMessage("提示", text, self.MessageIcon(QSystemTrayIcon.Information))
+
     def msgClickEvent(self):
         """
         Ubuntu没有生效,我的树莓派是生效的
