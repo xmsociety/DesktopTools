@@ -7,8 +7,8 @@ import shutil
 # from PySide6.QtCore import Qt
 from PySide6.QtGui import QClipboard
 
-from .models import FuncClass
 from ..logger import logger
+from .models import FuncClass
 
 
 def incremental_copy_files(source_path: str, dest_path: str, number: int):
@@ -131,10 +131,7 @@ class ClipFuncs:
         self.list_registered_funcclass: list[FuncClass] = [
             FuncClass(desc="连续空格替换为指定符号", func=self.replace_spaces),
             FuncClass(desc="data转为JSON字符串", func=self.data2json),
-            FuncClass(
-                desc="unixtime转datetime",
-                func=self.unixtime_to_datetime_str
-            ),
+            FuncClass(desc="unixtime转datetime", func=self.unixtime_to_datetime_str),
             FuncClass(desc="路径转python导入import语句", func=self.modify_import_path),
         ]
 

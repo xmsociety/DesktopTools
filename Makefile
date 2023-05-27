@@ -7,12 +7,12 @@ help: # 获取命令行示例
 code_check:
 	isort --check --diff DesktopTools
 	black --check --diff DesktopTools
-	flake8 --ignore W503,E203,E501,E731,F403,F401 . --exclude DesktopTools/feather_hotkey/searchbar.ui,venv/,DesktopTools/feather_hotkey/ui_searchbar.py
+	flake8 --ignore W503,E203,E501,E731,F403,F401 . --exclude ui_searchbar.py,searchbar_ui.py,venv/
 
 format:
 	isort DesktopTools
 	black DesktopTools
-	flake8 --ignore W503,E203,E501,E731,F403,F401 DesktopTools --exclude DesktopTools/feather_hotkey/searchbar.ui,venv/,DesktopTools/feather_hotkey/ui_searchbar.py
+	flake8 --ignore W503,E203,E501,E731,F403,F401 DesktopTools --exclude ui_searchbar.py,searchbar_ui.py,venv/
 
 run: # 运行
 	python test.py

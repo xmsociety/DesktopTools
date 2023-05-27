@@ -1,3 +1,4 @@
+from pydantic import BaseModel
 from sqlalchemy import (
     Column,
     DateTime,
@@ -9,8 +10,8 @@ from sqlalchemy import (
     func,
     text,
 )
-from pydantic import BaseModel
 from sqlalchemy.ext.declarative import declarative_base
+
 # from sqlalchemy.ext.hybrid import hybrid_method, hybrid_property
 from sqlalchemy.orm import sessionmaker
 
@@ -35,8 +36,9 @@ class FuncClass(BaseModel):
     class A:
         def _func(self):
             pass
+
     desc: str
-    result: str = ''
+    result: str = ""
     func: type(A()._func)
 
     class Config:
@@ -58,11 +60,7 @@ class KVMap(Base):
     __tablename__ = "kvmap"
 
     id = Column(Integer, primary_key=True, autoincrement=True)
-    type = Column(
-        SmallInteger,
-        server_default=text("1"),
-        comment="类型, 见 type_map"
-    )
+    type = Column(SmallInteger, server_default=text("1"), comment="类型, 见 type_map")
     create_time = Column(
         DateTime(timezone=8),
         server_default=time_now,
@@ -70,7 +68,9 @@ class KVMap(Base):
     )
     key = Column(String, comment="Key")
     value = Column(String, comment="Value")
-    Index("key", )
+    Index(
+        "key",
+    )
 
     type_map = {1: "文本", 2: "url", 3: "file path", 4: "img path"}
     type_map_reverse = dict(zip(type_map.values(), type_map.keys()))

@@ -1,4 +1,5 @@
 import os
+import shelve
 
 from PySide6.QtCore import Qt
 from PySide6.QtGui import QIcon
@@ -36,15 +37,15 @@ class FuzzyCompleter(QCompleter):
     def splitPath(self, path):
         # Return a list of strings that are potential matches for the input
         return [
-            word for word in self.model().stringList() if (
-                path.lower() in word.lower()
-            )
+            word for word in self.model().stringList() if (path.lower() in word.lower())
         ]
+
 
 class WinSearchBar(QWidget):
     """
     功能搜索框
     """
+
     SignCommand = "eval 执行它(请仔细核对命令,并知晓后果)"
     Record_KV = "记录kv"
     Read_KV = "读取kv"
@@ -68,6 +69,7 @@ class WinSearchBar(QWidget):
         self.ui.lineEdit.textChanged.connect(self.handleTextChange)
         self.ui.listWidget.clicked.connect(self.on_listWidget_clicked)
         self.command = None
+        self.shelve = shelve.open("spam")
         self.set_icon()
 
     def set_icon(self):
@@ -103,8 +105,9 @@ class WinSearchBar(QWidget):
         elif completion_text in set(self.dict_colon_func.keys()):
             self.dict_colon_func[completion_text]()
             self.hide()
-        elif ": " in completion_text and (completion_text.split(": ")[0]
-                                          in set(self.dict_colon_func.keys())):
+        elif ": " in completion_text and (
+            completion_text.split(": ")[0] in set(self.dict_colon_func.keys())
+        ):
             func_key, content = completion_text.split(": ")
             self.dict_colon_func[func_key](content)
             self.hide()
@@ -130,9 +133,9 @@ class WinSearchBar(QWidget):
            mode in ("record", "read")
         """
         try:
-            if text and mode == "record" and text[0] == '/' and ": " in text:
+            if text and mode == "record" and text[0] == "/" and ": " in text:
                 return True
-            elif text and mode == "read" and text[0] == '/':
+            elif text and mode == "read" and text[0] == "/":
                 return True
             return False
         except Exception:
@@ -148,13 +151,17 @@ class WinSearchBar(QWidget):
             return True
         return False
 
-    def record_kv(self, completion_text=None):
-        # TODO 将KV写入数据库
+    def record_kv(self, _=None):
+        k, v = self.ui.lineEdit.text().split(": ")
+        self.shelve[k[1:]] = v
         self.tray.show_info_msg("写入kv成功...")
 
-    def read_kv(self, content=None):
-        # TODO 从数据库读取可能的key和value
-        self.tray.show_info_msg(f"使用{content}读取kv...")
+    def read_kv(self, k=None):
+        # 从数据库读取可能的key和value
+        v = self.shelve.get(k, "")
+        if v:
+            self.clip_funcs.set_clipboard(v)
+            self.tray.show_info_msg(f"{k}'s v 已经写入粘贴板")
 
     def get_eval_command_rst(self, text):
         """获取eval结果"""
@@ -185,17 +192,17 @@ class WinSearchBar(QWidget):
             # 存储
             list_model.append(WinSearchBar.Record_KV)
         elif self.like_kv(mode="read", text=text):
-            # TODO 读取 相近的key
-            list_model.append(WinSearchBar.Read_KV + ": " + "todo read from db")
+            # 读取 相近的key
+            for i in self.shelve.keys():
+                if text != "/" and text[1:] in i:
+                    list_model.append(WinSearchBar.Read_KV + ": " + f"{i}")
 
         self.ui.listWidget.addItems(list_model)
         if self.ui.listWidget.model().rowCount() == 0:
             self.ui.listWidget.hide()
         else:
             self.ui.listWidget.show()
-            self.ui.listWidget.setCurrentIndex(
-                self.ui.listWidget.model().index(0, 0)
-            )
+            self.ui.listWidget.setCurrentIndex(self.ui.listWidget.model().index(0, 0))
 
     def handleTextChange(self):
         text = self.ui.lineEdit.text()
@@ -215,4 +222,5 @@ class WinSearchBar(QWidget):
             super().keyPressEvent(event)
 
     def closeEvent(self, _):
+        self.shelve.close()
         self.close()

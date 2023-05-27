@@ -67,6 +67,7 @@ nohup.out
 # sqlite3
 *.db
 *.db-journal
+spam*
 
 # Flask stuff:
 instance/
