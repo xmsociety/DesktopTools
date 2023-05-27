@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "DesktopTools"
-version = "0.0.5"
+version = "0.0.7"
 description = "A desktop tool that includes some useful scripts."
 authors = ["ianvzs <ianvzs@outlook.com>", "saint <ysudqfs@163.com>"]
 readme = "README.md"

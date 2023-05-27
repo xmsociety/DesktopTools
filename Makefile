@@ -4,10 +4,8 @@
 help: # 获取命令行示例
 	@grep ":" Makefile | grep -v "Makefile"
 
-code_check:
-	isort --check --diff DesktopTools
-	black --check --diff DesktopTools
-	flake8 --ignore W503,E203,E501,E731,F403,F401 . --exclude ui_searchbar.py,searchbar_ui.py,venv/
+check:
+	python .\scripts\check.py
 
 format:
 	isort DesktopTools
