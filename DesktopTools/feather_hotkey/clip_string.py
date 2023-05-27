@@ -4,10 +4,11 @@ import random
 import re
 import shutil
 
-from PySide6.QtCore import Qt
-from PySide6.QtGui import QClipboard, QPixmap
+# from PySide6.QtCore import Qt
+from PySide6.QtGui import QClipboard
 
 from ..logger import logger
+from .models import FuncClass
 
 
 def incremental_copy_files(source_path: str, dest_path: str, number: int):
@@ -52,7 +53,11 @@ def safe_eval(expr):
     allowed_globals = {"__builtins__": None}
     allowed_locals = {}
     # 执行表达式
-    result = eval(expr, allowed_globals, allowed_locals)
+    result = None
+    try:
+        result = eval(expr, allowed_globals, allowed_locals)
+    except Exception:
+        pass
     return result
 
 
@@ -84,16 +89,21 @@ def extract_float(string):
 
 def unixtime_to_datetime_str(unixtime_str):
     list_float = extract_float(unixtime_str)
-    dt = datetime.datetime.fromtimestamp(0)
+    logger.debug(f"unixtime_str: {unixtime_str} - list_float: {list_float}")
+    unixtime = 0
     if list_float:
-        dt = datetime.datetime.fromtimestamp(list_float[0])
+        unixtime = list_float[0]
     else:
         unixtime_str = extract_numbers(unixtime_str)
         if not unixtime_str or not unixtime_str.isdigit():
             return ""
         unixtime = int(unixtime_str)
+    dt_str = ""
+    try:
         dt = datetime.datetime.fromtimestamp(unixtime)
-    dt_str = dt.strftime("%Y-%m-%d %H:%M:%S")
+        dt_str = dt.strftime("%Y-%m-%d %H:%M:%S")
+    except Exception:
+        pass
     return dt_str
 
 
@@ -118,60 +128,71 @@ class ClipFuncs:
 
     def __init__(self, clipboard: QClipboard) -> None:
         self.clipboard = clipboard
-        self.dict_registered: dict = {
-            f"clip-连续空格替换为指定符号{self.SplitSign}": self.replace_spaces,
-            "clip-data转为JSON字符串": self.data2json,
-            "clip-unixtime转datetime": self.unixtime_to_datetime_str,
-            "clip-路径转python导入import语句": self.modify_import_path,
-        }
+        self.list_registered_funcclass: list[FuncClass] = [
+            FuncClass(desc="连续空格替换为指定符号", func=self.replace_spaces),
+            FuncClass(desc="data转为JSON字符串", func=self.data2json),
+            FuncClass(desc="unixtime转datetime", func=self.unixtime_to_datetime_str),
+            FuncClass(desc="路径转python导入import语句", func=self.modify_import_path),
+        ]
 
-    def get_clipboard_text(self):
-        originalText = self.clipboard.text()
-        if originalText:
-            return originalText
-        return ""
+    def list_all_result(self, text: str) -> list[FuncClass]:
+        """
+        列出所有功能函数的计算结果
+        """
+        list_rst: list[FuncClass] = []
+        for i in self.list_registered_funcclass:
+            if not i.get_result(text):
+                continue
+            list_rst.append(i)
+        return list_rst
 
-    def unixtime_to_datetime_str(self):
-        content = unixtime_to_datetime_str(self.get_clipboard_text() or 0)
+    def set_clipboard(self, content):
+        self.clipboard.setText(content)
+
+    def unixtime_to_datetime_str(self, text):
+        content = unixtime_to_datetime_str(text or 0)
         if not content:
             return False, "非unix时间"
-        self.clipboard.setText(content)
-        return True, ""
+        # self.set_clipboard(content)
+        return True, content
 
-    def data2json(self):
+    def data2json(self, text):
         """
         将data转为json字符串
         """
-        originalText = self.clipboard.text()
+        originalText = text
+        content = ""
         if originalText:
             try:
                 content = data2json(originalText)
-                self.clipboard.setText(content)
+                # self.set_clipboard(content)
             except Exception as err:
                 logger.error(f"data2json: {err}")
                 return False, str(err)
-        return True, ""
+        return text != content, content
 
-    def replace_spaces(self, target_symbol: str):
+    def replace_spaces(self, text, target_symbol: str = "|"):
         """
         将连续空格替换为|
         多为复制表格数据转Markdown使用
         """
-        originalText = self.clipboard.text()
+        originalText = text
         if originalText:
             content = replace_spaces(originalText, target_symbol)
             logger.debug(f"{originalText} chg2(by: {target_symbol}) {content}")
-            self.clipboard.setText(content)
-        return True, ""
+            # self.set_clipboard(content)
+        return text != content, content
 
-    def modify_import_path(self):
+    def modify_import_path(self, text):
         """
         将文件路径切换成python导入语句
         """
-        file_path: str = self.get_clipboard_text()
+        if ("\\" not in text) and ("/" not in text):
+            return False, ""
+        file_path: str = text
         import_path = modify_import_path(file_path=file_path)
-        self.clipboard.setText(import_path)
-        return True, ""
+        # self.set_clipboard(import_path)
+        return True, import_path
 
 
 if __name__ == "__main__":

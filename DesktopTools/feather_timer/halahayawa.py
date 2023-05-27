@@ -146,12 +146,16 @@ class WinHowLongHadYouWork(QWidget):
         self.setWindowTitle("Pendulum")
 
         # 设置图标
-        app_path = os.path.dirname(os.path.abspath(__file__))
-        root_path, feather_fname = os.path.split(app_path)
-        if feather_fname.startswith("feather"):
-            ico_path = os.path.join(root_path, "harry_potter.ico")
-            self.setWindowIcon(QIcon(ico_path))
-            # self.setWindowIcon(QIcon("harry_potter.ico"))
+        ico_path = ""
+        if os.path.exists("harry_potter.ico"):
+            ico_path = "harry_potter.ico"
+        else:
+            app_path = os.path.dirname(os.path.abspath(__file__))
+            root_path, feather_fname = os.path.split(app_path)
+            if feather_fname.startswith("feather"):
+                ico_path = os.path.join(root_path, "harry_potter.ico")
+        self.setWindowIcon(QIcon(ico_path))
+        # self.setWindowIcon(QIcon("harry_potter.ico"))
 
         self.vbox, self.hbox, self.hbox2, self.hbox3 = self.initBoxLayout()
         self.initMainWidgets()
@@ -168,7 +172,7 @@ class WinHowLongHadYouWork(QWidget):
         self.vbox.addLayout(self.hbox3)
         self.setLayout(self.vbox)
 
-        self.show()
+        # self.show()
 
     def initBoxLayout(self):
         vbox = QVBoxLayout()
@@ -238,8 +242,17 @@ class WinHowLongHadYouWork(QWidget):
         )
         # 此方法不警告了,不过多屏居中会..居中在所有屏幕总和的中间
 
+    def closeEvent(self, event):
+        """
+        点击x关闭窗口时
+        如果不ignore掉该信号的话会导致主进程退出
+        """
+        self.hide()
+        event.ignore()
+
 
 if __name__ == "__main__":
+    """这段应该不能正常运行了, 有空儿再琢磨下怎么单模块测试"""
     app = QApplication(sys.argv)
     screen = app.primaryScreen().geometry()
     ex = WinHowLongHadYouWork(screen, app=app)

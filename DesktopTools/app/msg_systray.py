@@ -41,11 +41,15 @@ class TrayIcon(QSystemTrayIcon):
         self.messageClicked.connect(self.msgClickEvent)
 
         # 设置图标
-        app_path = os.path.dirname(os.path.abspath(__file__))
-        root_path, app_fname = os.path.split(app_path)
-        if app_fname == "app":
-            ico_path = os.path.join(root_path, "harry_potter.ico")
-            self.setIcon(QIcon(ico_path))
+        ico_path = ""
+        if os.path.exists("harry_potter.ico"):
+            ico_path = "harry_potter.ico"
+        else:
+            app_path = os.path.dirname(os.path.abspath(__file__))
+            root_path, app_fname = os.path.split(app_path)
+            if app_fname == "app":
+                ico_path = os.path.join(root_path, "harry_potter.ico")
+        self.setIcon(QIcon(ico_path))
         self.icon = self.MessageIcon(QSystemTrayIcon.MessageIcon.NoIcon)
 
     def iconClicked(self, reason):
@@ -56,6 +60,12 @@ class TrayIcon(QSystemTrayIcon):
                 pw.hide()
             else:
                 pw.show()
+
+    def show_warning_msg(self, text):
+        self.showMessage("警告", text, self.MessageIcon(QSystemTrayIcon.Warning))
+
+    def show_info_msg(self, text):
+        self.showMessage("提示", text, self.MessageIcon(QSystemTrayIcon.Information))
 
     def msgClickEvent(self):
         """

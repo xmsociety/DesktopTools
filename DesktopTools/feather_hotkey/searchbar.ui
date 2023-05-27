@@ -61,21 +61,34 @@
       </layout>
      </item>
      <item>
-      <widget class="QListView" name="listView">
-       <property name="enabled">
-        <bool>true</bool>
+      <widget class="QListWidget" name="listWidget">
+       <property name="layoutDirection">
+        <enum>Qt::LeftToRight</enum>
        </property>
        <property name="styleSheet">
         <string notr="true">background-color: #FFFFFF;
-border-radius: 10px;
+border-radius: 16px;
 border: 2px solid #CCCCCC;
 padding: 20px;
-font-size: 18px;
-font-family: Arial, sans-serif;</string>
+font-size: 20px;
+font-family: Arial, sans-serif;
+line-height: 2.5;
+margin-bottom: 10px;	
+margin: 1px; </string>
        </property>
-       <property name="locale">
-        <locale language="Chinese" country="China"/>
+       <property name="currentRow">
+        <number>0</number>
        </property>
+       <item>
+        <property name="text">
+         <string>你好</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>hello</string>
+        </property>
+       </item>
       </widget>
      </item>
     </layout>
