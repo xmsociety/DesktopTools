@@ -88,6 +88,7 @@ class WinSearchBar(QWidget):
         # self.setWindowFlags(self.windowFlags() | Qt.FramelessWindowHint)
         self.setWindowFlags(Qt.FramelessWindowHint)
         self.setAttribute(Qt.WA_TranslucentBackground)
+        self.ui.listWidget.setWordWrap(True)
 
     def unregistered_warning(self, *arg, **kwargs):
         self.ui.lineEdit.setText("命令错误-没有匹配到处理方法")
