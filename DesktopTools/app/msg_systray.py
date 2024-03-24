@@ -20,17 +20,20 @@ class TrayIcon(QSystemTrayIcon):
         设计托盘的菜单
         """
         self.menuMain = QMenu()
-        self.subMenu = QMenu()
-        self.showAction = QAction("测试休息提醒消息", self, triggered=self.showYouNeedRest)
-        self.quitAction = QAction("退出", self, triggered=self.quit)
 
-        self.subMenu.addAction(self.showAction)
+        self.action_test = QAction("测试休息提醒消息", self, triggered=self.showYouNeedRest)
+        self.subMenu = QMenu()
+        self.subMenu.setTitle("测试菜单")
+        self.subMenu.addAction(self.action_test)
         self.menuMain.addMenu(
             self.subMenu,
         )
 
-        self.menuMain.addAction(self.quitAction)
-        self.subMenu.setTitle("测试菜单")
+        self.action_quit = QAction("退出", self, triggered=self.quit)
+        self.action_search_bar = QAction("搜索", self, triggered=self.show_search_bar)
+        self.menuMain.addAction(self.action_search_bar)
+        self.menuMain.addAction(self.action_quit)
+        
         self.setContextMenu(self.menuMain)
 
     def initConnect(self):
@@ -86,7 +89,10 @@ class TrayIcon(QSystemTrayIcon):
         }
         vlevel = dict_msg[level]["value"]
         txt = dict_msg[level]["desc"]
-        self.showMessage(txt, msg, self.MessageIcon(vlevel))
+        self.showMessage(txt, msg or "", self.MessageIcon(vlevel))
+
+    def show_search_bar(self, msg="主动点击测试", level=0):
+        self.parent().open_search_bar()
 
     def quit(self):
         # TODO 完整的退出 不过注释掉几行也能退出,蛮奇怪,先这么吧.

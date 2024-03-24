@@ -68,13 +68,14 @@
        <property name="styleSheet">
         <string notr="true">background-color: #FFFFFF;
 border-radius: 16px;
-border: 2px solid #CCCCCC;
+border: 2px solid #FFFFFF;
 padding: 20px;
 font-size: 20px;
 font-family: Arial, sans-serif;
 line-height: 2.5;
 margin-bottom: 10px;	
-margin: 1px; </string>
+margin: 1px; 
+background: transparent;</string>
        </property>
        <property name="currentRow">
         <number>0</number>
