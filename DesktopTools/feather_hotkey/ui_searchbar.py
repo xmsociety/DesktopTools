@@ -67,15 +67,16 @@ class Ui_SearchBar(object):
         self.listWidget.setObjectName(u"listWidget")
         self.listWidget.setLayoutDirection(Qt.LeftToRight)
         self.listWidget.setStyleSheet(u"background-color: #FFFFFF;\n"
+"selection-background-color: rgb(255, 163, 72);\n"
 "border-radius: 16px;\n"
-"border: 2px solid #FFFFFF;\n"
+"border: 2px solid #CCCCCC;\n"
 "padding: 20px;\n"
 "font-size: 20px;\n"
 "font-family: Arial, sans-serif;\n"
 "line-height: 2.5;\n"
 "margin-bottom: 10px;	\n"
 "margin: 1px; \n"
-"background: transparent;")
+"background: rgba(255, 255, 255, 180);")
 
         self.verticalLayout.addWidget(self.listWidget)
 

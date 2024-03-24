@@ -67,15 +67,16 @@
        </property>
        <property name="styleSheet">
         <string notr="true">background-color: #FFFFFF;
+selection-background-color: rgb(255, 163, 72);
 border-radius: 16px;
-border: 2px solid #FFFFFF;
+border: 2px solid #CCCCCC;
 padding: 20px;
 font-size: 20px;
 font-family: Arial, sans-serif;
 line-height: 2.5;
 margin-bottom: 10px;	
 margin: 1px; 
-background: transparent;</string>
+background: rgba(255, 255, 255, 180);</string>
        </property>
        <property name="currentRow">
         <number>0</number>
