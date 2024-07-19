@@ -43,7 +43,7 @@ class SignalHotKey(QThread):
             # 还没原生的方法,只能用`pynput`啦
             hotkey = keyboard.GlobalHotKeys(
                 {
-                    "<ctrl>+1": self.on_activate,
+                    "<ctrl>+<32>": self.on_activate,
                     # "<ctrl>+<alt>+g": lambda: print("Goodbye"),
                 }
             )
