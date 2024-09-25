@@ -11,6 +11,8 @@ format:
 	isort DesktopTools
 	black DesktopTools
 	flake8 --ignore W503,E203,E501,E731,F403,F401 DesktopTools --exclude ui_searchbar.py,searchbar_ui.py,venv/
+doc:
+	pip install sphinx myst_parser
 
 poetry: # 有新的库包引入,推代码需要先验证的
 	pip install -U pip setuptools
