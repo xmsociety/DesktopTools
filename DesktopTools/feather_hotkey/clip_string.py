@@ -28,7 +28,7 @@ def incremental_copy_files(source_path: str, dest_path: str, number: int):
         source_file = random.choice(file_list)
         # 构建目标文件路径
         file_name = os.path.basename(source_file)
-        dest_file = os.path.join(dest_path, f"{i+1}_{file_name}")
+        dest_file = os.path.join(dest_path, f"{i + 1}_{file_name}")
         # 复制文件
         shutil.copy(source_file, dest_file)
 
