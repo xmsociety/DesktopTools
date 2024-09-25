@@ -11,8 +11,8 @@ class CustomItemDelegate(QStyledItemDelegate):
         super().paint(painter, option, index)
 
         # 获取当前项的文本
-        item = self.parent().item(index.row())
-        text = item.text()
+        # item = self.parent().item(index.row())
+        # text = item.text()
 
         # 设置半透明的颜色
         painter.setPen(QColor(150, 150, 150, 150))  # 半透明的灰色
