@@ -3,6 +3,7 @@ import os
 import random
 import re
 import shutil
+from zoneinfo import ZoneInfo
 
 # from PySide6.QtCore import Qt
 from PySide6.QtGui import QClipboard
@@ -27,7 +28,7 @@ def incremental_copy_files(source_path: str, dest_path: str, number: int):
         source_file = random.choice(file_list)
         # 构建目标文件路径
         file_name = os.path.basename(source_file)
-        dest_file = os.path.join(dest_path, f"{i+1}_{file_name}")
+        dest_file = os.path.join(dest_path, f"{i + 1}_{file_name}")
         # 复制文件
         shutil.copy(source_file, dest_file)
 
@@ -87,7 +88,7 @@ def extract_float(string):
     return numbers
 
 
-def unixtime_to_datetime_str(unixtime_str):
+def unixtime_to_datetime_str(unixtime_str, tz=ZoneInfo("Asia/Shanghai")):
     list_float = extract_float(unixtime_str)
     logger.debug(f"unixtime_str: {unixtime_str} - list_float: {list_float}")
     unixtime = 0
@@ -100,7 +101,7 @@ def unixtime_to_datetime_str(unixtime_str):
         unixtime = int(unixtime_str)
     dt_str = ""
     try:
-        dt = datetime.datetime.fromtimestamp(unixtime)
+        dt = datetime.datetime.fromtimestamp(unixtime, tz=tz)
         dt_str = dt.strftime("%Y-%m-%d %H:%M:%S")
     except Exception:
         pass
@@ -132,6 +133,9 @@ class ClipFuncs:
             FuncClass(desc="连续空格替换为指定符号", func=self.replace_spaces),
             FuncClass(desc="data转为JSON字符串", func=self.data2json),
             FuncClass(desc="unixtime转datetime", func=self.unixtime_to_datetime_str),
+            FuncClass(
+                desc="unixtime转datetime(UTC)", func=self.unixtime_to_datetime_utc_str
+            ),
             FuncClass(desc="路径转python导入import语句", func=self.modify_import_path),
         ]
 
@@ -148,6 +152,13 @@ class ClipFuncs:
 
     def set_clipboard(self, content):
         self.clipboard.setText(content)
+
+    def unixtime_to_datetime_utc_str(self, text):
+        content = unixtime_to_datetime_str(text or 0, tz=ZoneInfo("UTC"))
+        if not content:
+            return False, "非unix时间"
+        # self.set_clipboard(content)
+        return True, content
 
     def unixtime_to_datetime_str(self, text):
         content = unixtime_to_datetime_str(text or 0)

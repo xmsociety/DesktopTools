@@ -10,8 +10,11 @@ website: https://github.com/IanVzs/Halahayawa
 Last edited: 22 2 2021
 """
 import os
+import random
 import sys
 import time
+
+import psutil
 
 # from PyQt5.QtWidgets import QApplication, QWidget, QDesktopWidget
 # from PyQt5.QtGui import QIcon, QFont
@@ -27,6 +30,7 @@ from PySide6.QtWidgets import (
     QWidget,
 )
 
+from ..app.msg_systray import TrayIcon
 from ..args import MOUSE  # Alert_LockWorkStation_MSG,
 from ..args import (
     KEYBOARD,
@@ -46,7 +50,7 @@ from .monitor import AlertDict, SignalKeyboard, SignalMouse, ThreadSignal, WorkD
 
 
 class WinHowLongHadYouWork(QWidget):
-    def __init__(self, screen=False, tray=None):
+    def __init__(self, screen=False, tray: TrayIcon = None):
         super().__init__(None)
 
         self.screen = screen
@@ -117,7 +121,7 @@ class WinHowLongHadYouWork(QWidget):
         self.timer.timeout.connect(self.timeWorking)
         self.timerRest.timeout.connect(self.show_rest_msg)
         self.timer.start(1 * 1000)  # 1s
-        self.timerRest.start(10 * 1000)  # 10s
+        self.timerRest.start(60 * 1000)  # 60s
 
     def timeWorking(self):
         self.work_dict.summarize()
@@ -138,6 +142,32 @@ class WinHowLongHadYouWork(QWidget):
             self.dictLabels["restAll"].setText(
                 f"已经休息: {lenth_time(rest_tm)}\n本次总小憩: {lenth_time(self.work_dict.rest_time)}"
             )
+        if random.random() < 0.3:
+            # 0.3的可能性计算电脑资源信息
+            # 获取系统内存信息
+            memory_info = psutil.virtual_memory()
+            memory_info_dict = {
+                "总内存": f"{memory_info.total / (1024 ** 3):.2f} GB",
+                "已用内存": f"{memory_info.used / (1024 ** 3):.2f} GB",
+                "可用内存": f"{memory_info.available / (1024 ** 3):.2f} GB",
+                "空闲内存": f"{memory_info.free / (1024 ** 3):.2f} GB",
+                "内存使用率": f"{memory_info.percent}%",
+            }
+            percpu_percent = psutil.cpu_percent(
+                percpu=True, interval=0
+            )  # interval=1 表示计算1秒钟内的CPU使用率
+            warning_msg = ""
+            if memory_info_dict["内存使用率"] > "90%":
+                warning_msg += (
+                    f"内存使用率过高,注意排查: {memory_info_dict['内存使用率']}"
+                )
+            if sum(percpu_percent) > len(percpu_percent) * 50:
+                warning_msg += (
+                    f"cpu使用率过高,系统将操作缓慢: {percpu_percent.join(',')}"
+                )
+            if warning_msg:
+                slogger.warning(warning_msg)
+                self.tray.show_warning_msg(warning_msg)
 
     def initUI(self):
         # self.tooltip()
@@ -202,7 +232,9 @@ class WinHowLongHadYouWork(QWidget):
     def click_2(self, button):
         button.setEnabled(False)
         self.thread_2 = ThreadSignal()  # 创建线程
-        self.thread_2._signal.connect(lambda: self.enableButton(button))  # 借用lambda实现带参
+        self.thread_2._signal.connect(
+            lambda: self.enableButton(button)
+        )  # 借用lambda实现带参
         self.thread_2.start()  # 开始线程
 
     def enableButton(self, button):
