@@ -1,12 +1,17 @@
 import sys
+
 from pynput import keyboard
-from PySide6.QtCore import QByteArray, QThread, Signal, QAbstractNativeEventFilter
+from PySide6.QtCore import QAbstractNativeEventFilter, QByteArray, QThread, Signal
+
 from ..logger import logger
 
 if sys.platform == "win32":
     import ctypes
+
     import win32con
+
     user32 = ctypes.windll.user32
+
 
 class NativeEvent(QAbstractNativeEventFilter):
     def __init__(self, hotkey) -> None:
@@ -16,7 +21,9 @@ class NativeEvent(QAbstractNativeEventFilter):
     def nativeEventFilter(self, eventType: QByteArray | bytes, message: int) -> object:
         if sys.platform == "win32":
             from ctypes import wintypes
+
             import win32con
+
             msg = wintypes.MSG.from_address(message.__init__())
             if eventType == "windows_generic_MSG" and msg.message == win32con.WM_HOTKEY:
                 self.hotkey.on_activate()
@@ -34,7 +41,9 @@ class SignalHotKey(QThread):
 
     def register(self):
         if sys.platform == "win32":
-            sign = user32.RegisterHotKey(None, self.hotkey_id, win32con.MOD_ALT, self.hotkey_vk)
+            sign = user32.RegisterHotKey(
+                None, self.hotkey_id, win32con.MOD_ALT, self.hotkey_vk
+            )
             # https://learn.microsoft.com/zh-cn/windows/win32/api/winuser/nf-winuser-registerhotkey
             logger.info(f"Hotkey Registration {sign}")
             self.parent().installEventFilter(NativeEvent(hotkey=self))

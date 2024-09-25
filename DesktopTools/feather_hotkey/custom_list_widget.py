@@ -1,5 +1,5 @@
-from PySide6.QtWidgets import QStyledItemDelegate
 from PySide6.QtGui import QColor, QFont
+from PySide6.QtWidgets import QStyledItemDelegate
 
 
 class CustomItemDelegate(QStyledItemDelegate):
@@ -23,4 +23,6 @@ class CustomItemDelegate(QStyledItemDelegate):
         text_width = painter.fontMetrics().horizontalAdvance(shortcut_text)
 
         # 绘制文本
-        painter.drawText(option.rect.right() - text_width - 10, option.rect.top() + 15, shortcut_text)
+        painter.drawText(
+            option.rect.right() - text_width - 10, option.rect.top() + 15, shortcut_text
+        )

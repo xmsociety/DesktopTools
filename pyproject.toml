@@ -17,8 +17,8 @@ packages = [
 DesktopTools = "DesktopTools:main"
 
 [tool.poetry.dependencies]
-python = ">=3.8"
-PySide6 = { version = "^6.0.0", optional = true }
+python = "^3.9"
+PySide6 = { version = "^6.0.0", python = ">=3.9,<3.13", optional = true }
 pynput = "^1.7.6"
 loguru = "^0.6.0"
 SQLAlchemy = "^2.0.0"
@@ -38,7 +38,7 @@ black = {version = "*", allow-prereleases = true}
 pytest = "^6.2.4"
 pytest-cov = "^2.12.1"
 Sphinx = "^4.1.2"
-myst-parser = "^0.15.1"
+myst-parser = "^0.16.0"
 
 [tool.isort]
 profile = "black"

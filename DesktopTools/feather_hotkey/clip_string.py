@@ -133,7 +133,9 @@ class ClipFuncs:
             FuncClass(desc="连续空格替换为指定符号", func=self.replace_spaces),
             FuncClass(desc="data转为JSON字符串", func=self.data2json),
             FuncClass(desc="unixtime转datetime", func=self.unixtime_to_datetime_str),
-            FuncClass(desc="unixtime转datetime(UTC)", func=self.unixtime_to_datetime_utc_str),
+            FuncClass(
+                desc="unixtime转datetime(UTC)", func=self.unixtime_to_datetime_utc_str
+            ),
             FuncClass(desc="路径转python导入import语句", func=self.modify_import_path),
         ]
 

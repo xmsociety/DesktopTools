@@ -10,10 +10,12 @@ website: https://github.com/IanVzs/Halahayawa
 Last edited: 22 2 2021
 """
 import os
+import random
 import sys
 import time
-import random
+
 import psutil
+
 # from PyQt5.QtWidgets import QApplication, QWidget, QDesktopWidget
 # from PyQt5.QtGui import QIcon, QFont
 from PySide6.QtCore import Qt, QTimer
@@ -28,6 +30,7 @@ from PySide6.QtWidgets import (
     QWidget,
 )
 
+from ..app.msg_systray import TrayIcon
 from ..args import MOUSE  # Alert_LockWorkStation_MSG,
 from ..args import (
     KEYBOARD,
@@ -44,11 +47,10 @@ from ..tools import lenth_time, lock_work_station, time_now
 from . import input_counter
 from .data_alchemy.models import WorkInfo
 from .monitor import AlertDict, SignalKeyboard, SignalMouse, ThreadSignal, WorkDict
-from ..app.msg_systray import TrayIcon
 
 
 class WinHowLongHadYouWork(QWidget):
-    def __init__(self, screen=False, tray: TrayIcon=None):
+    def __init__(self, screen=False, tray: TrayIcon = None):
         super().__init__(None)
 
         self.screen = screen
@@ -151,15 +153,22 @@ class WinHowLongHadYouWork(QWidget):
                 "空闲内存": f"{memory_info.free / (1024 ** 3):.2f} GB",
                 "内存使用率": f"{memory_info.percent}%",
             }
-            percpu_percent = psutil.cpu_percent(percpu=True, interval=0)  # interval=1 表示计算1秒钟内的CPU使用率
+            percpu_percent = psutil.cpu_percent(
+                percpu=True, interval=0
+            )  # interval=1 表示计算1秒钟内的CPU使用率
             warning_msg = ""
             if memory_info_dict["内存使用率"] > "90%":
-                warning_msg += f"内存使用率过高,注意排查: {memory_info_dict['内存使用率']}"
+                warning_msg += (
+                    f"内存使用率过高,注意排查: {memory_info_dict['内存使用率']}"
+                )
             if sum(percpu_percent) > len(percpu_percent) * 50:
-                warning_msg += f"cpu使用率过高,系统将操作缓慢: {percpu_percent.join(',')}"
+                warning_msg += (
+                    f"cpu使用率过高,系统将操作缓慢: {percpu_percent.join(',')}"
+                )
             if warning_msg:
                 slogger.warning(warning_msg)
                 self.tray.show_warning_msg(warning_msg)
+
     def initUI(self):
         # self.tooltip()
         # self.setGeometry(300, 300, 300, 220)
@@ -223,7 +232,9 @@ class WinHowLongHadYouWork(QWidget):
     def click_2(self, button):
         button.setEnabled(False)
         self.thread_2 = ThreadSignal()  # 创建线程
-        self.thread_2._signal.connect(lambda: self.enableButton(button))  # 借用lambda实现带参
+        self.thread_2._signal.connect(
+            lambda: self.enableButton(button)
+        )  # 借用lambda实现带参
         self.thread_2.start()  # 开始线程
 
     def enableButton(self, button):

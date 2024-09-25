@@ -91,7 +91,10 @@ class KeyMouse(Base):
     )
     count = Column(Integer, server_default=text("1"), comment="次数统计")
     device = Column(
-        SmallInteger, nullable=False, server_default=text("0"), comment="设备1: 键盘, 0: 鼠标"
+        SmallInteger,
+        nullable=False,
+        server_default=text("0"),
+        comment="设备1: 键盘, 0: 鼠标",
     )
     UniqueConstraint("name", "create_time", name="fcx_name_date")
 
@@ -115,9 +118,13 @@ class WorkInfo(Base):
     id = Column(Integer, primary_key=True, autoincrement=True)
     type = Column(SmallInteger, server_default=text("1"), comment="类型, 见 type_map")
     continued = Column(
-        Integer, nullable=False, comment="此条状态持续时间,create_time-continued为这条状态真正开始时间"
+        Integer,
+        nullable=False,
+        comment="此条状态持续时间,create_time-continued为这条状态真正开始时间",
     )
-    star = Column(SmallInteger, server_default=text("0"), comment="星级, 允许收藏一些东西")
+    star = Column(
+        SmallInteger, server_default=text("0"), comment="星级, 允许收藏一些东西"
+    )
     create_time = Column(
         DateTime(timezone=8),
         server_default=time_now,
@@ -126,7 +133,9 @@ class WorkInfo(Base):
     update_time = Column(
         DateTime, server_default=time_now, onupdate=time_now, comment="修改时间"
     )
-    note = Column(String, comment="笔记,比如小憩前可以先记录一下当前工作的进度.提醒性文字,再小憩")
+    note = Column(
+        String, comment="笔记,比如小憩前可以先记录一下当前工作的进度.提醒性文字,再小憩"
+    )
     UniqueConstraint("type", "create_time", name="notefx_type_crtime")
     Index("date_max", "create_time", "continued")
 

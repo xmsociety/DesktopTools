@@ -21,7 +21,9 @@ class TrayIcon(QSystemTrayIcon):
         """
         self.menuMain = QMenu()
 
-        self.action_test = QAction("测试休息提醒消息", self, triggered=self.showYouNeedRest)
+        self.action_test = QAction(
+            "测试休息提醒消息", self, triggered=self.showYouNeedRest
+        )
         self.subMenu = QMenu()
         self.subMenu.setTitle("测试菜单")
         self.subMenu.addAction(self.action_test)
@@ -33,7 +35,7 @@ class TrayIcon(QSystemTrayIcon):
         self.action_search_bar = QAction("搜索", self, triggered=self.show_search_bar)
         self.menuMain.addAction(self.action_search_bar)
         self.menuMain.addAction(self.action_quit)
-        
+
         self.setContextMenu(self.menuMain)
 
     def initConnect(self):
