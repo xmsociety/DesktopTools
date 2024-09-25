@@ -19,3 +19,7 @@ build: # pip安装
 	@echo "instal sucess: DesktopTools"
 ui: # 编译.ui 到 .py
 	cd DesktopTools/feather_hotkey && pyside6-uic searchbar.ui -o ui_searchbar.py
+
+edit_ui:
+	find DesktopTools/ -name *.ui
+	pyside6-designer DesktopTools/feather_hotkey/searchbar.ui

@@ -1,13 +1,14 @@
 import os
 import shelve
 
-from PySide6.QtCore import Qt
-from PySide6.QtGui import QIcon
-from PySide6.QtWidgets import QAbstractItemView, QCompleter, QWidget
+from PySide6.QtCore import Qt, QModelIndex
+from PySide6.QtGui import QIcon, QKeySequence, QShortcut
+from PySide6.QtWidgets import QAbstractItemView, QCompleter, QWidget, QListWidgetItem
 
 from ..logger import logger
 from .clip_string import ClipFuncs, safe_eval
 from .ui_searchbar import Ui_SearchBar
+from .custom_list_widget import CustomItemDelegate
 
 
 class FuzzyCompleter(QCompleter):
@@ -54,6 +55,7 @@ class WinSearchBar(QWidget):
         super().__init__(*args, **kwargs)
         self.ui = Ui_SearchBar()
         self.ui.setupUi(self)
+        self.ui.listWidget.setItemDelegate(CustomItemDelegate(self.ui.listWidget))
         self.app = app
         self.tray = tray
         self.dict_windows = dict_windows
@@ -68,6 +70,12 @@ class WinSearchBar(QWidget):
         self.ui.pushButton.clicked.connect(self.clip_worker)
         self.ui.lineEdit.textChanged.connect(self.handleTextChange)
         self.ui.listWidget.clicked.connect(self.on_listWidget_clicked)
+        # 创建快捷键
+        self.shortcuts = []
+        for i in range(10):  # 设置 Ctrl+1 到 Ctrl+9 的快捷键
+            shortcut = QShortcut(QKeySequence(f"Ctrl+{i + 1}"), self)
+            shortcut.activated.connect(lambda index=i: self.on_shortcut_activated(index))
+            self.shortcuts.append(shortcut)
         self.command = None
         self.shelve = shelve.open("spam")
         self.set_icon()
@@ -88,17 +96,29 @@ class WinSearchBar(QWidget):
         # self.setWindowFlags(self.windowFlags() | Qt.FramelessWindowHint)
         self.setWindowFlags(Qt.FramelessWindowHint)
         self.setAttribute(Qt.WA_TranslucentBackground)
+        self.ui.listWidget.setWordWrap(True)
+        self.update()
 
     def unregistered_warning(self, *arg, **kwargs):
         self.ui.lineEdit.setText("命令错误-没有匹配到处理方法")
         return False, "命令错误-没有匹配到处理方法"
 
-    def on_listWidget_clicked(self, index):
+    def on_shortcut_activated(self, index: int):
+        # 使用快捷键激活 需要将序号转为item类型
+        if index < self.ui.listWidget.count():
+            self.on_listWidget_clicked(self.ui.listWidget.item(index))
+
+    def on_listWidget_clicked(self, item):
         """
         下拉候选项被点击时的处理动作
         点击 下拉选项
         """
-        completion_text = index.data()
+        if isinstance(item, QListWidgetItem):
+            completion_text = item.text()
+        elif isinstance(item, QModelIndex):
+            completion_text = item.data()
+        else:
+            logger.warning(f"错误的传入类型-在处理点击下拉选项时: {type(item)}")
         if completion_text in set(self.dict_windows.keys()):
             self.dict_windows[completion_text].show()
             self.hide()

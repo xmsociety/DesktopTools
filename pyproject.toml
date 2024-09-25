@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "DesktopTools"
-version = "0.0.7"
+version = "0.1.0"
 description = "A desktop tool that includes some useful scripts."
 authors = ["ianvzs <ianvzs@outlook.com>", "saint <ysudqfs@163.com>"]
 readme = "README.md"
@@ -17,7 +17,7 @@ packages = [
 DesktopTools = "DesktopTools:main"
 
 [tool.poetry.dependencies]
-python = ">=3.7,<3.12"
+python >=3.7
 PySide6 = { version = "^6.0.0", optional = true }
 pynput = "^1.7.6"
 loguru = "^0.6.0"
@@ -25,7 +25,7 @@ SQLAlchemy = "^2.0.0"
 yapf = "^0.32.0"
 wheel = "^0.40.0"
 pydantic = "^1.10.7"
-
+psutil >=5.9.4
 
 [tool.poetry.extras]
 ui = ["PySide6"]

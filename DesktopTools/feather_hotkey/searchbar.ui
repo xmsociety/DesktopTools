@@ -17,10 +17,10 @@
    <string>小命令工具</string>
   </property>
   <property name="styleSheet">
-   <string notr="true">            background-color: #F9F9F9;
+   <string notr="true">background-color: #F0F0F0;
             color: #333333;
             font-size: 16px;
-            font-family: Arial, sans-serif;</string>
+            font-family: 'Helvetica Neue', Arial, sans-serif;</string>
   </property>
   <layout class="QHBoxLayout" name="horizontalLayout_2">
    <item>
@@ -30,12 +30,12 @@
        <item>
         <widget class="QLineEdit" name="lineEdit">
          <property name="styleSheet">
-          <string notr="true">            background-color: #FFFFFF;
-            border-radius: 40px;
-            border: 2px solid #CCCCCC;
-            padding: 20px;
+          <string notr="true">background-color: #FFFFFF;
+            border-radius: 20px;
+            border: 1px solid #CCCCCC;
+            padding: 10px;
             font-size: 18px;
-            font-family: Arial, sans-serif;</string>
+            font-family: 'Helvetica Neue', Arial, sans-serif;</string>
          </property>
          <property name="placeholderText">
           <string>开始输入命令...</string>
@@ -45,12 +45,12 @@
        <item>
         <widget class="QPushButton" name="pushButton">
          <property name="styleSheet">
-          <string notr="true">            background-color: #008CBA;
-            border-radius: 40px;
+          <string notr="true">background-color: #007BFF;
+            border-radius: 20px;
             border: none;
-            padding: 20px 40px;
+            padding: 10px 20px;
             font-size: 18px;
-            font-family: Arial, sans-serif;
+            font-family: 'Helvetica Neue', Arial, sans-serif;
             color: #FFFFFF;</string>
          </property>
          <property name="text">
@@ -67,14 +67,16 @@
        </property>
        <property name="styleSheet">
         <string notr="true">background-color: #FFFFFF;
-border-radius: 16px;
-border: 2px solid #CCCCCC;
-padding: 20px;
+selection-background-color: #FFCA72;
+border-radius: 10px;
+border: 1px solid #CCCCCC;
+padding: 10px;
 font-size: 20px;
-font-family: Arial, sans-serif;
-line-height: 2.5;
+font-family: 'Helvetica Neue', Arial, sans-serif;
+line-height: 1.5;
 margin-bottom: 10px;	
-margin: 1px; </string>
+margin: 1px; 
+background: rgba(255, 255, 255, 0.9);</string>
        </property>
        <property name="currentRow">
         <number>0</number>
