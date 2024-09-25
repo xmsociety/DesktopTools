@@ -8,6 +8,7 @@ from PySide6.QtWidgets import QAbstractItemView, QCompleter, QWidget, QListWidge
 from ..logger import logger
 from .clip_string import ClipFuncs, safe_eval
 from .ui_searchbar import Ui_SearchBar
+from .custom_list_widget import CustomItemDelegate
 
 
 class FuzzyCompleter(QCompleter):
@@ -54,6 +55,7 @@ class WinSearchBar(QWidget):
         super().__init__(*args, **kwargs)
         self.ui = Ui_SearchBar()
         self.ui.setupUi(self)
+        self.ui.listWidget.setItemDelegate(CustomItemDelegate(self.ui.listWidget))
         self.app = app
         self.tray = tray
         self.dict_windows = dict_windows
@@ -95,6 +97,7 @@ class WinSearchBar(QWidget):
         self.setWindowFlags(Qt.FramelessWindowHint)
         self.setAttribute(Qt.WA_TranslucentBackground)
         self.ui.listWidget.setWordWrap(True)
+        self.update()
 
     def unregistered_warning(self, *arg, **kwargs):
         self.ui.lineEdit.setText("命令错误-没有匹配到处理方法")

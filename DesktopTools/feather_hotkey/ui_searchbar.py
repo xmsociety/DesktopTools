@@ -42,8 +42,7 @@ class Ui_SearchBar(object):
 "            border: 1px solid #CCCCCC;\n"
 "            padding: 10px;\n"
 "            font-size: 18px;\n"
-"            font-family: 'Helvetica Neue', Arial, sans-serif;\n"
-"            box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);")
+"            font-family: 'Helvetica Neue', Arial, sans-serif;")
 
         self.horizontalLayout_3.addWidget(self.lineEdit)
 
@@ -55,8 +54,7 @@ class Ui_SearchBar(object):
 "            padding: 10px 20px;\n"
 "            font-size: 18px;\n"
 "            font-family: 'Helvetica Neue', Arial, sans-serif;\n"
-"            color: #FFFFFF;\n"
-"            box-shadow: 0 4px 8px rgba(0, 123, 255, 0.3);")
+"            color: #FFFFFF;")
 
         self.horizontalLayout_3.addWidget(self.pushButton)
 
