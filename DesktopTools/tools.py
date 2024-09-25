@@ -5,6 +5,7 @@ author: Ian Vzs
 website: https://github.com/IanVzs/Halahayawa
 Last edited: 10 03 2021
 """
+
 import hashlib
 import json
 import sys

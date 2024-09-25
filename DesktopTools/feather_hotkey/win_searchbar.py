@@ -1,14 +1,14 @@
 import os
 import shelve
 
-from PySide6.QtCore import Qt, QModelIndex
+from PySide6.QtCore import QModelIndex, Qt
 from PySide6.QtGui import QIcon, QKeySequence, QShortcut
-from PySide6.QtWidgets import QAbstractItemView, QCompleter, QWidget, QListWidgetItem
+from PySide6.QtWidgets import QAbstractItemView, QCompleter, QListWidgetItem, QWidget
 
 from ..logger import logger
 from .clip_string import ClipFuncs, safe_eval
-from .ui_searchbar import Ui_SearchBar
 from .custom_list_widget import CustomItemDelegate
+from .ui_searchbar import Ui_SearchBar
 
 
 class FuzzyCompleter(QCompleter):
@@ -74,7 +74,9 @@ class WinSearchBar(QWidget):
         self.shortcuts = []
         for i in range(10):  # 设置 Ctrl+1 到 Ctrl+9 的快捷键
             shortcut = QShortcut(QKeySequence(f"Ctrl+{i + 1}"), self)
-            shortcut.activated.connect(lambda index=i: self.on_shortcut_activated(index))
+            shortcut.activated.connect(
+                lambda index=i: self.on_shortcut_activated(index)
+            )
             self.shortcuts.append(shortcut)
         self.command = None
         self.shelve = shelve.open("spam")
