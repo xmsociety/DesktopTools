@@ -12,6 +12,7 @@ Last edited: 22 2 2021
 import time
 
 from PySide6.QtCore import Qt
+from PySide6.QtWidgets import QApplication
 from PySide6.QtWidgets import QMessageBox, QWidget
 
 from .app.msg_systray import TrayIcon
@@ -29,7 +30,7 @@ class WinMain(QWidget):
     所有的子`QWidget`理论上都可以独立运行
     """
 
-    def __init__(self, screen=False, app=None):
+    def __init__(self, screen=False, app: QApplication=None):
         super().__init__(None)
 
         self.screen = screen
@@ -38,8 +39,9 @@ class WinMain(QWidget):
 
         self.win_timer = WinHowLongHadYouWork(screen, self.tray)
         dict_win_feather = {"工作时长": self.win_timer}
-        self.win_searchbar = WinSearchBar(app, self.tray, dict_win_feather)
-
+        self.clipboard = app.clipboard()
+        self.win_searchbar = WinSearchBar(self.clipboard, self.tray, dict_win_feather)
+        self.clipboardInit()
         self.initSearchBar()
 
         # self.win_timer.show()
@@ -54,6 +56,9 @@ class WinMain(QWidget):
         time.sleep(0.5)  # 此处继续sleep防止mac下出错 - 未验证
         self.thread_hotkey.register()
         logger.debug("will show")
+
+    def clipboardInit(self):
+        self.clipboard.dataChanged.connect(self.win_searchbar.clipboard_changed)
 
     def open_search_bar(self):
         self.win_searchbar.setWindowFlags(Qt.WindowStaysOnTopHint)
