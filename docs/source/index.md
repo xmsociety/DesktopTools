@@ -1,17 +1,19 @@
 # DesktopTools
-python http file server
+python desktop tools
 
 ## Install & Run
 ### Source
 ```bash
-# TODO
+git clone git@github.com:xmsociety/DesktopTools.git
+cd DesktopTools
+pip install .
 ```
 
 ### Pip
 Make sure you have pip installed.
 
 ```bash
-pip install DesktopTools
+pip install DesktopTools[ui]
 ```
 #### Local
 ```
