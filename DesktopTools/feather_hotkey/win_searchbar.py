@@ -2,7 +2,7 @@ import os
 import shelve
 
 from PySide6.QtCore import QModelIndex, Qt
-from PySide6.QtGui import QIcon, QKeySequence, QShortcut
+from PySide6.QtGui import QIcon, QKeySequence, QShortcut, QClipboard
 from PySide6.QtWidgets import QAbstractItemView, QCompleter, QListWidgetItem, QWidget
 
 from ..logger import logger
@@ -51,12 +51,11 @@ class WinSearchBar(QWidget):
     Record_KV = "记录kv"
     Read_KV = "读取kv"
 
-    def __init__(self, app=None, tray=None, dict_windows={}, *args, **kwargs):
+    def __init__(self, clipboard: QClipboard=None, tray=None, dict_windows={}, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.ui = Ui_SearchBar()
         self.ui.setupUi(self)
         self.ui.listWidget.setItemDelegate(CustomItemDelegate(self.ui.listWidget))
-        self.app = app
         self.tray = tray
         self.dict_windows = dict_windows
         self.dict_colon_func = {
@@ -65,7 +64,8 @@ class WinSearchBar(QWidget):
         }
         self.ui.pushButton.setDefault(True)
         self.ui.listWidget.hide()
-        self.clip_funcs = ClipFuncs(clipboard=self.app.clipboard())
+        self.clipboard = clipboard
+        self.clip_funcs = ClipFuncs(clipboard=self.clipboard)
         self.ui.listWidget.setSelectionBehavior(QAbstractItemView.SelectRows)
         self.ui.pushButton.clicked.connect(self.clip_worker)
         self.ui.lineEdit.textChanged.connect(self.handleTextChange)
@@ -172,6 +172,17 @@ class WinSearchBar(QWidget):
         if text in all_win_key:
             return True
         return False
+
+    def clipboard_changed(self):
+        text = self.clipboard.text()
+        save_key = f"cp_{text[:30]}"
+        counter = 0
+        for i in self.shelve.keys():
+            if "cp_" in i:  # 如果有cp_开头的key, 则删除
+                counter += 1
+                if counter > 30:
+                    self.shelve.pop(i)
+        self.shelve[save_key] = text
 
     def record_kv(self, _=None):
         k, v = self.ui.lineEdit.text().split(": ")
