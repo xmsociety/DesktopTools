@@ -2,7 +2,7 @@ import os
 import shelve
 
 from PySide6.QtCore import QModelIndex, Qt
-from PySide6.QtGui import QIcon, QKeySequence, QShortcut, QClipboard
+from PySide6.QtGui import QClipboard, QIcon, QKeySequence, QShortcut
 from PySide6.QtWidgets import QAbstractItemView, QCompleter, QListWidgetItem, QWidget
 
 from ..logger import logger
@@ -51,7 +51,9 @@ class WinSearchBar(QWidget):
     Record_KV = "记录kv"
     Read_KV = "读取kv"
 
-    def __init__(self, clipboard: QClipboard=None, tray=None, dict_windows={}, *args, **kwargs):
+    def __init__(
+        self, clipboard: QClipboard = None, tray=None, dict_windows={}, *args, **kwargs
+    ):
         super().__init__(*args, **kwargs)
         self.ui = Ui_SearchBar()
         self.ui.setupUi(self)

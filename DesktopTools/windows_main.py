@@ -12,8 +12,7 @@ Last edited: 22 2 2021
 import time
 
 from PySide6.QtCore import Qt
-from PySide6.QtWidgets import QApplication
-from PySide6.QtWidgets import QMessageBox, QWidget
+from PySide6.QtWidgets import QApplication, QMessageBox, QWidget
 
 from .app.msg_systray import TrayIcon
 from .feather_hotkey.thread import SignalHotKey
@@ -30,7 +29,7 @@ class WinMain(QWidget):
     所有的子`QWidget`理论上都可以独立运行
     """
 
-    def __init__(self, screen=False, app: QApplication=None):
+    def __init__(self, screen=False, app: QApplication = None):
         super().__init__(None)
 
         self.screen = screen
